@@ -55,7 +55,7 @@ exports.debuglevel = 2;
 exports.whitelist = [];
 
 /* Add a help link for the bot here, e.g. to pastebin to explain commands. */
-exports.botguide = "https://pastebin.com/5GLxEt4P";
+exports.botguide = "";
 
 /* Turns on moderation capabilities for the bot. THE BOT IS NOT HUMAN AND
  * DOES NOT MAKE A PERFECT MODERATOR. If enabled, I encourage roomstaff to
