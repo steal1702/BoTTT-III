@@ -7,7 +7,6 @@ Installation
 BoTTT III requires [node.js](http://nodejs.org/) to run. It has the same version requirements as [Pokemon Showdown itself](https://github.com/Zarel/Pokemon-Showdown). I recommend installing the most recent stable version.
 
 Next up is cloning this bot. This can be done in two ways: cloning it via `git` or downloading as ZIP.
-Downloading it as ZIP is the easy and lazy way, but is a lot less handy to update than cloning this repository.
 
 To install dependencies, run:
 
@@ -30,11 +29,15 @@ Credits:
  - Morfent (Development of original BoTTT)
  - TalkTakesTime (Development of original BoTTT)
  - Quinella (Development of original BoTTT)
+ 
+Commands
+-----------
+A quick summary of commands can be found [here](https://pastebin.com/5GLxEt4P). In addition, here are the high-restriction / dev commands:
 
-License
--------
+`reload` or `rl`- Updates the commands.js and parser.js files without needing to shut down and restart the bot. If you made a syntax error, you will be informed on the console and will not be able to reload until you have resolved it.
 
-BoTTT III is distributed under the terms of the [MIT License][5].
+`custom` - Allow the bot to say something arbitrarily in any room it is currently in. Use the syntax .custom [room] statement. To bypass the character restriction, you can also pass BoTTT III a https://pastebin.com/raw link as your statement.
 
-  [5]: https://github.com/Quinella/Pokemon-Showdown-Bot/blob/master/LICENSE
+`js` - Execute arbitrary Javascript.
 
+`kill` - Kill the process BoTTT III is running on. Equivalent to Ctrl+C in console.
