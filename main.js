@@ -1,0 +1,279 @@
+﻿/**
+ * This is the main file for the Pokemon Showdown bot.
+ *
+ * Modified by DaWoblefet for use with BoTTT III with original work by TalkTakesTime, Quinella, and Morfent.
+ *
+ * Some parts of this code are taken from the Pokémon Showdown server code, so
+ * credits also go to Guangcong Luo and other Pokémon Showdown contributors.
+ * https://github.com/Zarel/Pokemon-Showdown
+ *
+ * @license MIT license
+ */
+
+
+//Logs various bits of information to the console based on config settings.
+global.info = function(text)
+{
+	if (config.debuglevel > 3) return;
+	if (!colors) global.colors = require("colors");
+	console.log("info".cyan + "  " + text);
+};
+
+global.debug = function(text)
+{
+	if (config.debuglevel > 2) return;
+	if (!colors) global.colors = require("colors");
+	console.log("debug".blue + " " + text);
+};
+
+global.recv = function(text)
+{
+	if (config.debuglevel > 0) return;
+	if (!colors) global.colors = require("colors");
+	console.log("recv".grey + "  " + text);
+};
+
+global.cmdr = function(text) //Receiving commands
+{
+	if (config.debuglevel !== 1) return;
+	if (!colors) global.colors = require("colors");
+	console.log("cmdr".grey + "  " + text);
+};
+
+global.dsend = function(text)
+{
+	if (config.debuglevel > 1) return;
+	if (!colors) global.colors = require("colors");
+	console.log("send".grey + "  " + text);
+};
+
+global.error = function(text)
+{
+	if (!colors) global.colors = require("colors");
+	console.log("error".red + " " + text);
+};
+
+global.ok = function(text)
+{
+	if (config.debuglevel > 4) return;
+	if (!colors) global.colors = require("colors");
+	console.log("ok".green + "    " + text);
+};
+
+//Turns string to its lowercase equivalent, then removes all non-alphanumeric characters.
+global.toID = function(text)
+{
+	return text.toLowerCase().replace(/[^a-z0-9]/g, "");
+};
+
+//Prevent the bot from being fed commands to say maliciously
+global.stripCommands = function(text)
+{
+	text = text.trim();
+	switch (text.charAt(0))
+	{
+		case '/':
+			return '/' + text;
+		case '!':
+			return '!' + text;
+		case '>':
+			if (text.substr(0, 3) === ">> " || text.substr(0, 4) === ">>> ") return " " + text;
+			/* fall through */
+		default:
+			return text;
+	}
+};
+
+global.send = function(connection, data)
+{
+	if (connection.connected)
+	{
+		if (!(data instanceof Array))
+		{
+			data = [data.toString()];
+		}
+		data = JSON.stringify(data);
+		dsend(data);
+		connection.send(data);
+	}
+};
+
+function runNpm(command)
+{
+	console.log("Running `npm " + command + "`...");
+
+	let child_process = require("child_process");
+	let npm = child_process.spawn("npm", [command]);
+
+	npm.stdout.on("data", function(data)
+	{
+		process.stdout.write(data);
+	});
+
+	npm.stderr.on("data", function(data)
+	{
+		process.stderr.write(data);
+	});
+
+	npm.on("close", function(code)
+	{
+		if (!code)
+		{
+			child_process.fork("main.js").disconnect();
+		}
+	});
+}
+
+//Check if everything that is needed is available
+try
+{
+	require("sugar");
+	require("colors");
+}
+catch (e)
+{
+	console.log("Dependencies are not installed!");
+	return runNpm("install");
+}
+
+if (!Object.select)
+{
+	console.log("Node needs to be updated!");
+	return runNpm("update");
+}
+
+//First dependencies and welcome message
+const { inspect } = require("util");
+global.colors = require("colors");
+
+console.log("------------------------------------".yellow);
+console.log("| Welcome to Pokemon Showdown Bot! |".yellow);
+console.log("------------------------------------".yellow);
+console.log();
+
+//Config and config.js watching...
+global.fs = require('fs');
+if (!('existsSync' in fs))
+{
+	fs.existsSync = require('path').existsSync;
+}
+
+if (!fs.existsSync("./config.js"))
+{
+	error("config.js doesn't exist; are you sure you renamed config-example.js to config.js?");
+	process.exit(-1);
+}
+
+global.config = require("./config.js");
+
+let checkCommandCharacter = function()
+{
+	if (!/[^a-z0-9 ]/i.test(config.commandcharacter))
+	{
+		error("invalid command character; should at least contain one non-alphanumeric character");
+		process.exit(-1);
+	}
+};
+
+checkCommandCharacter();
+
+let watchFile = function()
+{
+	try
+	{
+		return fs.watchFile.apply(fs, arguments);
+	}
+	catch (e)
+	{
+		error("your version of node does not support `fs.watchFile`");
+	}
+};
+
+if (config.watchconfig)
+{
+	watchFile("./config.js", function(curr, prev)
+	{
+		if (curr.mtime <= prev.mtime) return;
+		try
+		{
+			delete require.cache[require.resolve("./config.js")];
+			config = require("./config.js");
+			info("reloaded config.js");
+			checkCommandCharacter();
+		} catch (e) {}
+	});
+}
+
+//The actual connection.
+info("starting server");
+
+let WebSocketClient = require("websocket").client;
+global.Commands = require("./commands.js").commands;
+global.Parse = require("./parser.js").parse;
+global.hasTourStarted = false;
+
+let connect = function(retry)
+{
+	if (retry)
+	{
+		info("retrying...");
+	}
+
+	let ws = new WebSocketClient();
+
+	ws.on("connectFailed", function(err)
+	{
+		error("Could not connect to server " + config.server + ": " + inspect(err));
+		info("retrying in one minute");
+		hasTourStarted = false;
+
+		setTimeout(function() {connect(true);}, 60000);
+	});
+
+	ws.on("connect", function(connection)
+	{
+		ok("connected to server " + config.server);
+
+		connection.on("error", function(err)
+		{
+			error("connection error: " + err);
+			info("retrying in 10 seconds");
+			hasTourStarted = false;
+
+			setTimeout(function() {connect(true);}, 10000);
+		});
+
+		connection.on("close", function()
+		{
+			error("connection closed: " + inspect(arguments));
+			info("retrying in 10 seconds");
+			hasTourStarted = false;
+
+			setTimeout(function() {connect(true);}, 10000);
+		});
+
+		connection.on("message", function(message)
+		{
+			if (message.type === "utf8")
+			{
+				recv(inspect(message.utf8Data));
+				Parse.data(message.utf8Data, connection);
+			}
+		});
+	});
+
+	// The connection itself
+	let id = Math.floor(Math.random() * 900) + 100;
+	let chars = "abcdefghijklmnopqrstuvwxyz0123456789_";
+	let str = "";
+	for (let i = 0, l = chars.length; i < 8; i++)
+	{
+		str += chars.charAt(~~(Math.random() * l));
+	}
+
+	let conStr = "ws://" + config.server + ':' + config.port + "/showdown/" + id + '/' + str + "/websocket";
+	info("connecting to " + conStr + " - secondary protocols: " + inspect(config.secprotocols));
+	ws.connect(conStr, config.secprotocols);
+};
+
+connect();
