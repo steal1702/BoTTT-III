@@ -42,7 +42,24 @@ exports.commands =
 		}
 		this.say(con, room, text);
 	},
+	git: function(arg, by, room)
+	{
+		let text;
 
+		if (config.git)
+		{
+			text = "Source code for " + config.nick + ": " + config.git;
+		}
+		else
+		{
+			text = "There is no public source code for " + config.nick + ".";
+		}
+		if (by.charAt(0) === " ")
+		{
+			text = "/pm " + by + ", " + text;
+		}
+		this.say(room, text);
+	},
 	/*Developer Commands
 	 *These commands are useful for bot upkeep, or generally speaking, any arbitrary action.
 	 *They are very powerful and not intended for the average user. */
