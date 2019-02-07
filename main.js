@@ -84,20 +84,6 @@ global.stripCommands = function(text)
 	}
 };
 
-global.send = function(connection, data)
-{
-	if (connection.connected)
-	{
-		if (!(data instanceof Array))
-		{
-			data = [data.toString()];
-		}
-		data = JSON.stringify(data);
-		dsend(data);
-		connection.send(data);
-	}
-};
-
 function runNpm(command)
 {
 	console.log("Running `npm " + command + "`...");
@@ -210,7 +196,55 @@ info("starting server");
 let WebSocketClient = require("websocket").client;
 global.Commands = require("./commands.js").commands;
 global.Parse = require("./parser.js").parse;
+global.Connection = null;
 global.hasTourStarted = false;
+const MESSAGE_THROTTLE = 850;
+
+let queue = [];
+let dequeueTimeout = null;
+let lastSentAt = 0;
+
+global.send = function(data)
+{
+	if (!data || !Connection.connected) return false;
+
+	let now = Date.now();
+	if (now < lastSentAt + MESSAGE_THROTTLE - 5)
+	{
+		queue.push(data);
+		if (!dequeueTimeout)
+		{
+			dequeueTimeout = setTimeout(dequeue, now - lastSentAt + MESSAGE_THROTTLE);
+		}
+		return false;
+	}
+
+	if (!Array.isArray(data))
+	{
+		data = [data.toString()];
+	}
+	data = JSON.stringify(data);
+	dsend(data);
+	Connection.send(data);
+
+	lastSentAt = now;
+	if (dequeueTimeout)
+	{
+		if (queue.length)
+		{
+			dequeueTimeout = setTimeout(dequeue, MESSAGE_THROTTLE);
+		}
+		else
+		{
+			dequeueTimeout = null;
+		}
+	}
+};
+
+function dequeue()
+{
+	send(queue.shift());
+}
 
 let connect = function(retry)
 {
@@ -230,50 +264,53 @@ let connect = function(retry)
 		setTimeout(function() {connect(true);}, 60000);
 	});
 
-	ws.on("connect", function(connection)
+	ws.on("connect", function(con)
 	{
+		Connection = con;
 		ok("connected to server " + config.server);
 
-		connection.on("error", function(err)
+		con.on("error", function(err)
 		{
 			error("connection error: " + err);
-			info("retrying in 10 seconds");
-			hasTourStarted = false;
+			//info("retrying in 20 seconds");
+			//hasTourStarted = false;
 
-			setTimeout(function() {connect(true);}, 10000);
+			//setTimeout(function() {connect(true);}, 20000);
 		});
 
-		connection.on("close", function()
+		con.on("close", function()
 		{
 			error("connection closed: " + inspect(arguments));
-			info("retrying in 10 seconds");
+			info("retrying in 20 seconds");
 			hasTourStarted = false;
 
-			setTimeout(function() {connect(true);}, 10000);
+			setTimeout(function() {connect(true);}, 20000);
 		});
 
-		connection.on("message", function(message)
+		con.on("message", function(response)
 		{
-			if (message.type === "utf8")
-			{
-				recv(inspect(message.utf8Data));
-				Parse.data(message.utf8Data, connection);
-			}
+			if (response.type !== 'utf8') return false;
+			let message = response.utf8Data;
+			recv(message);
+
+			/* SockJS messages sent from the server begin with 'a';
+			this filters out other SockJS response types (heartbeats in particular)*/
+			if (message.charAt(0) !== 'a') return false;
+			Parse.data(message);
 		});
 	});
 
 	// The connection itself
-	let id = Math.floor(Math.random() * 900) + 100;
+	let id = Math.floor(Math.random() * 1000);
 	let chars = "abcdefghijklmnopqrstuvwxyz0123456789_";
 	let str = "";
 	for (let i = 0, l = chars.length; i < 8; i++)
 	{
-		str += chars.charAt(~~(Math.random() * l));
+		str += chars.charAt(Math.floor(Math.random() * l));
 	}
 
 	let conStr = "ws://" + config.server + ':' + config.port + "/showdown/" + id + '/' + str + "/websocket";
-	info("connecting to " + conStr + " - secondary protocols: " + inspect(config.secprotocols));
+	info("connecting to " + conStr + " - secondary protocols: " + (config.secprotocols.join(", ") || "none"));
 	ws.connect(conStr, config.secprotocols);
 };
-
 connect();
