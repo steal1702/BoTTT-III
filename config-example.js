@@ -18,7 +18,7 @@ exports.avatar = "";
 
 /* Rooms that should be joined in quotes, separated by commas. Showdown
  * policy is not to join lobby, so please don't do that. */
-exports.rooms = [""];
+exports.rooms = ["exampleRoom", "another room"];
 
 /* Any private rooms that should be joined in quotes, separated by commas.
  * The only difference in private rooms are moderation type (you can't warn).
@@ -48,7 +48,7 @@ exports.secprotocols = [];
  * 3 = error, ok, info (recommended for production)
  * 4 = error, ok
  * 5 = error   */
-exports.debuglevel = 2;
+exports.debuglevel = 3;
 
 /* Users here will never be punished by the bot. By default, all
  * users with drivers or higher will not be warned.   */
@@ -57,11 +57,12 @@ exports.whitelist = [];
 /* Add a help link for the bot here, e.g. to pastebin to explain commands. */
 exports.botguide = "";
 
+/* The repository for the bot. Leave blank if you have no public repository. */
+exports.git = "";
+
 /* Turns on moderation capabilities for the bot. THE BOT IS NOT HUMAN AND
  * DOES NOT MAKE A PERFECT MODERATOR. If enabled, I encourage roomstaff to
- * override the bot if it is being unfair. There is a relatively serious bug
- * where rarely on disconnects, two instances of the bot will rejoin a room, so
- * it doubly counts chat input and advances punishments accordingly. Use with caution.
+ * override the bot if it is being unfair. Use with caution.
  *
  * -Spamming/flooding is considered to be users who send 6 lines or more in 6 or fewer seconds.
  * -CAPS abuse is considered to be a chat line with at least 18 letters in CAPS and
