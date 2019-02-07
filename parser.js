@@ -3,8 +3,8 @@
  *
  * Modified by DaWoblefet for use with BoTTT III with original work by TalkTakesTime, Quinella, and Morfent.
  *
- * Some parts of this code are taken from the Pokémon Showdown server code, so
- * credits also go to Guangcong Luo and other Pokémon Showdown contributors.
+ * Some parts of this code are taken from the PokÃ©mon Showdown server code, so
+ * credits also go to Guangcong Luo and other PokÃ©mon Showdown contributors.
  * https://github.com/Zarel/Pokemon-Showdown
  *
  * @license MIT license
@@ -37,24 +37,15 @@ for (let i = 0, len = ranks.length; i < len; i++)
 	rankMap.set(ranks.charAt(i), i);
 }
 
-settings = {};
-try
-{
-	settings = JSON.parse(fs.readFileSync("settings.json"));
-	if (!Object.keys(settings).length && settings !== {}) settings = {};
-}
-catch (e) {} //File doesn't exist [yet]
-
 exports.parse =
 {
 	actionUrl: url.parse("https://play.pokemonshowdown.com/~~" + config.serverid + "/action.php"),
 	room: "lobby",
-	"settings": settings,
 	chatData: {},
 	ranks: {},
 	msgQueue: [],
 
-	data: function(data, connection)
+	data: function(data)
 	{
 		if (data.substr(0, 1) === 'a')
 		{
@@ -63,21 +54,21 @@ exports.parse =
 			{
 				for (let i = 0, len = data.length; i < len; i++)
 				{
-					this.splitMessage(data[i], connection);
+					this.splitMessage(data[i]);
 				}
 			}
 			else
 			{
-				this.splitMessage(data, connection);
+				this.splitMessage(data);
 			}
 		}
 	},
-	splitMessage: function(message, connection)
+	splitMessage: function(message)
 	{
 		if (!message) return;
 
 		let room = "lobby";
-		if (message.indexOf("\n") < 0) return this.message(message, connection, room);
+		if (message.indexOf("\n") < 0) return this.message(message, room);
 
 		let spl = message.split("\n");
 		if (spl[0].charAt(0) === '>')
@@ -91,20 +82,20 @@ exports.parse =
 			{
 				if (spl[2].substr(1, 10) === "tournament")
 				{
-					return this.message(spl[2], connection, room);
+					return this.message(spl[2], room);
 				}
 			}
 			catch (e) {}
 			if (spl[1].substr(1, 10) === "tournament")
 			{
-				return this.message(spl[1], connection, room);
+				return this.message(spl[1], room);
 			}
 			room = spl.shift().substr(1);
 		}
 
 		for (let i = 0, len = spl.length; i < len; i++)
 		{
-			this.message(spl[i], connection, room);
+			this.message(spl[i], room);
 		}
 	},
 
@@ -112,7 +103,7 @@ exports.parse =
 	Read more here: https://github.com/Zarel/Pokemon-Showdown/blob/167dce1ca67a1530449c0c777df8a5312f65fe26/PROTOCOL.md
 	*/
 
-	message: function(message, connection, room)
+	message: function(message, room)
 	{
 		//console.log(message);
 		let spl = message.split('|');
@@ -204,7 +195,7 @@ exports.parse =
 							}
 						}
 						catch (e) {}
-						send(connection, "|/trn " + config.nick + ",0," + data);
+						send("|/trn " + config.nick + ",0," + data);
 					}.bind(this));
 				}.bind(this));
 
@@ -226,40 +217,31 @@ exports.parse =
 				}
 
 				ok("logged in as " + spl[2]);
-				this.say(connection, room, "/avatar " + config.avatar);
+				send("|/avatar " + config.avatar);
 
 				//Joining the rooms
 				for (let i = 0, len = config.rooms.length; i < len; i++)
 				{
 					let room = config.rooms[i];
 					if (room === "lobby" && config.serverid === "showdown") continue; //Policy is to not auto-join lobby
-					this.msgQueue.push("|/join " + room);
+					send("|/join " + room);
 				}
 				for (let i = 0, len = config.privaterooms.length; i < len; i++)
 				{
 					let room = config.privaterooms[i];
 					if (room === "lobby" && config.serverid === "showdown") continue; //Policy is to not auto-join lobby
-					this.msgQueue.push("|/join " + room);
+					send("|/join " + room);
 				}
-				this.msgDequeue = setInterval(function ()
-				{
-					let msg = this.msgQueue.shift();
-					if (msg)
-					{
-						return send(connection, msg);
-					}
-					clearInterval(this.msgDequeue);
-					this.msgDequeue = null;
-				}.bind(this), 750);
+				setInterval(this.cleanChatData.bind(this), 30 * 60 * 1000);
 				break;
 			case 'c': //Dev messages, punishments, global stuff
 				by = spl[2];
-				this.chatMessage(spl[3], by, room, connection);
+				this.chatMessage(spl[3], by, room);
 				break;
 			case "c:": //Normal chat
 				by = spl[3];
-				this.processChatData(toID(by), room, connection, spl[4], by.charAt(0));
-				this.chatMessage(spl[4], by, room, connection);
+				this.processChatData(toID(by), room, spl[4], by.charAt(0));
+				this.chatMessage(spl[4], by, room);
 				break;
 			case "pm":
 				by = spl[2];
@@ -267,11 +249,11 @@ exports.parse =
 				{
 					this.ranks[room] = by.charAt(0);
 				}
-				if (by !== " " + config.nick)
+				if (toID(by) !== toID(config.nick))
 				{
 					console.log("PM from " + by + " at " + new Date().toLocaleString() + ": " + spl[4]); //Logs PMs to BoTTT III in the console.
 				}
-				this.chatMessage(spl[4], by, ',' + by, connection);
+				this.chatMessage(spl[4], by, ',' + by);
 				break;
 			case 'N': //Name changes with /nick or using the button
 				by = spl[2];
@@ -305,9 +287,15 @@ exports.parse =
 				break;
 			case "html": //HTML was received
 				break;
+			case "raw":
+				if (spl[2].startsWith("<strong class=\"message-throttle-notice\">"))
+				{
+					console.log("Message sent too fast at: " + new Date().toLocaleString() + ".");
+				}
+				break;
 		}
 	},
-	chatMessage: function(message, by, room, connection)
+	chatMessage: function(message, by, room)
 	{
 		let cmdrMessage = "[\"" + room + '|' + by + '|' + message + "\"]";
 		message = message.trim();
@@ -315,7 +303,7 @@ exports.parse =
 		//Auto-accepts invites to rooms if the global rank is % or higher.
 		if (room.charAt(0) === ',' && message.substr(0,8) === "/invite " && this.hasRank(by, "%@*&~"))
 		{
-			this.say(connection, "", "/join " + message.substr(8));
+			this.say("", "/join " + message.substr(8));
 		}
 
 		//If it's not a command or BoTTT III is saying a message, don't go any farther
@@ -350,11 +338,11 @@ exports.parse =
 
 				if (this.canUse(cmd, room, by, arg))
 				{
-					Commands[cmd].call(this, arg, by, room, connection); //Run the command from commands.js
+					Commands[cmd].call(this, arg, by, room); //Run the command from commands.js
 				}
 				else
 				{
-					this.say(connection, room, "/pm " + by + ", You don't have access to this command.");
+					this.say(room, "/pm " + by + ", You don't have access to this command.");
 				}
 			}
 			else
@@ -363,32 +351,19 @@ exports.parse =
 			}
 		}
 	},
-	say: function(connection, room, text)
+	say: function(room, text)
 	{
-		let str;
+		let msg;
 		if (room.charAt(0) !== ',')
 		{
-			str = (room !== "lobby" ? room : "") + '|' + text;
+			msg = (room !== "lobby" ? room : "") + '|' + text;
 		}
 		else //if room has a comma, it was done in PM
 		{
 			room = room.substr(1);
-			str = "|/pm " + room + ", " + text;
+			msg = "|/pm " + room + ", " + text;
 		}
-		this.msgQueue.push(str);
-		if (!this.msgDequeue)
-		{
-			this.msgDequeue = setInterval(function ()
-			{
-				let msg = this.msgQueue.shift();
-				if (msg)
-				{
-					return send(connection, msg);
-				}
-				clearInterval(this.msgDequeue);
-				this.msgDequeue = null;
-			}.bind(this), 750);
-		}
+		send(msg);
 	},
 
 
@@ -415,7 +390,7 @@ exports.parse =
 
 		if (userRank >= NONE)
 		{
-			if(["about", "commands", "usage"].indexOf(cmd) >= 0)
+			if(["commands", "git", "usage"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -431,7 +406,7 @@ exports.parse =
 
 		if (userRank >= DRIVER)
 		{
-			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom"].indexOf(cmd) >= 0)
+			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -457,24 +432,27 @@ exports.parse =
 		switch (cmd)
 		{
 			case "tour":
-				if ((user === "LegaVGC" && arg === "vgc13") || arg === "samples") {canUse = true;}
+				if (arg === "samples" || (toID(user) === "legavgc" && arg === "vgc13")) {canUse = true;}
 			case "blog":
-				if (user.substr(0, 7) === "+ansena" || user === "#DaWoblefet") {canUse = true;}
+				if (toID(user) === "ansena" || toID(user) === "dawoblefet") {canUse = true;}
 				break;
 			case "icpa":
-				if (user.substr(0,13) === " torwildheart" || user.substr(0,5) == " ICPA") {canUse = true;}
+				if (toID(user).substr(0,12) === "torwildheart" || toID(user).substr(0,4) == "icpa") {canUse = true;}
 				break;
 			case "chef":
-				if (user.substr(0,5) === " chef") {canUse = true;}
+				if (toID(user).substr(0,4) === "chef") {canUse = true;}
 				break;
 			case "platypus":
-				if (user === " PlatypusVGC" || user === " AwesomePlatypus") {canUse = true;}
+				if (toID(user) === "platypusvgc" || toID(user) === "awesomeplatypus") {canUse = true;}
 				break;
 			case "mynameis":
-				if (user === " CasedVictory") {canUse = true;}
+				if (toID(user) === "casedvictory") {canUse = true;}
 				break;
 			case "nom":
-				if (user === " Seaco") {canUse = true;}
+				if (toID(user) === "seaco") {canUse = true;}
+				break;
+			case "ezrael":
+				if (toID(user) === "ezrael") {canUse = true;}
 				break;
 			default:
 				break;
@@ -483,7 +461,7 @@ exports.parse =
 		return canUse;
 	},
 
-	processChatData: function(user, room, connection, msg, auth)
+	processChatData: function(user, room, msg, auth)
 	{
 		if (!user || room.charAt(0) === ',') return;
 
@@ -516,17 +494,16 @@ exports.parse =
 		//This deals with punishing rulebreakers. Note that the bot can't think, however, so it might make mistakes. It will not punish drivers+.
 		if (config.allowmute && config.whitelist.indexOf(user) === -1 && "%@*&#~".indexOf(auth) === -1)
 		{
-			let useDefault = !(this.settings.modding && this.settings.modding[room]);
 			let pointVal = 0;
 			let muteMessage = "";
-			let modSettings = useDefault ? null : this.settings.modding[room];
 
 			//Moderation for flooding (more than x lines in y seconds)
 			let times = roomData.times;
 			let timesLen = times.length;
 			let isFlooding = (timesLen >= FLOOD_MESSAGE_NUM && (now - times[timesLen - FLOOD_MESSAGE_NUM]) < FLOOD_MESSAGE_TIME
 				&& (now - times[timesLen - FLOOD_MESSAGE_NUM]) > (FLOOD_PER_MSG_MIN * FLOOD_MESSAGE_NUM));
-			if ((useDefault || !modSettings.flooding) && isFlooding)
+
+			if (isFlooding)
 			{
 				if (pointVal < 2)
 				{
@@ -536,7 +513,7 @@ exports.parse =
 			}
 			//Moderation for caps (over x% of the letters in a line of y characters are capital)
 			let capsMatch = msg.replace(/[^A-Za-z]/g, "").match(/[A-Z]/g);
-			if ((useDefault || !modSettings.caps) && capsMatch && toID(msg).length > MIN_CAPS_LENGTH && (capsMatch.length >= ~~(toID(msg).length * MIN_CAPS_PROPORTION)))
+			if (capsMatch && toID(msg).length > MIN_CAPS_LENGTH && (capsMatch.length >= ~~(toID(msg).length * MIN_CAPS_PROPORTION)))
 			{
 				if (pointVal < 1)
 				{
@@ -546,7 +523,7 @@ exports.parse =
 			}
 			//Moderation for stretching (over x consecutive characters in the message are the same)
 			let stretchMatch = /(.)\1{7,}/gi.test(msg) || /(..+)\1{4,}/gi.test(msg); //Matches the same character (or group of characters) 8 (or 5) or more times in a row
-			if ((useDefault || !modSettings.stretching) && stretchMatch)
+			if (stretchMatch)
 			{
 				if (pointVal < 1)
 				{
@@ -563,7 +540,7 @@ exports.parse =
 			{
 				if (autocorrectRegexes[i].test(msg)) //If the message contains the regular expression
 				{
-					this.say(connection, room, "*" + autocorrectMessages[i]);
+					this.say(room, "*" + autocorrectMessages[i]);
 					roomData.triggeredAutocorrect++;
 				}
 			}
@@ -617,7 +594,7 @@ exports.parse =
 					userData.zeroTol++; //Getting muted or higher increases your zero tolerance level (warns do not)
 				}
 				roomData.lastAction = now;
-				this.say(connection, room, '/' + cmd + " " + user + muteMessage);
+				this.say(room, '/' + cmd + " " + user + muteMessage);
 				console.log(cmd + ": " + user + " at " + new Date().toLocaleString());
 			}
 		}
@@ -659,7 +636,6 @@ exports.parse =
 			}
 		}
 	},
-
 	uncacheTree: function(root)
 	{
 		let uncache = [require.resolve(root)];
