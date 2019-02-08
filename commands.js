@@ -25,7 +25,7 @@ exports.commands =
 	about: "commands",
 	guide: "commands",
 	help: "commands",
-	commands: function(arg, by, room, con)
+	commands: function(arg, by, room)
 	{
 		let text;
 		if (config.botguide)
@@ -40,7 +40,7 @@ exports.commands =
 		{
 			text = "/pm " + by + ", " + text;
 		}
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 	git: function(arg, by, room)
 	{
@@ -60,13 +60,14 @@ exports.commands =
 		}
 		this.say(room, text);
 	},
+
 	/*Developer Commands
 	 *These commands are useful for bot upkeep, or generally speaking, any arbitrary action.
 	 *They are very powerful and not intended for the average user. */
 
 	// Refreshes the command list and parser. To refresh something else, you must stop the bot completely. Only dev has access.
 	rl: "reload",
-	reload: function(arg, by, room, con)
+	reload: function(arg, by, room)
 	{
 		try
 		{
@@ -74,7 +75,7 @@ exports.commands =
 			Commands = require("./commands.js").commands;
 			this.uncacheTree("./parser.js");
 			Parse = require('./parser.js').parse;
-			this.say(con, room, "Commands reloaded.");
+			this.say(room, "Commands reloaded.");
 		}
 		catch (e)
 		{
@@ -90,7 +91,7 @@ exports.commands =
 	a pastebin.com/raw/ link and it will read and execute that instead.
 	Example: ".custom [vgc] https://pastebin.com/raw/therestofthePastebinURL"
 	*/
-	custom: async function(arg, by, room, con)
+	custom: async function(arg, by, room)
 	{
 		let targetRoom;
 		if (arg.indexOf("[") === 0 && arg.indexOf("]") > -1)
@@ -107,25 +108,26 @@ exports.commands =
 		}
 
 		//If no target room is specified, it just sends it back as a PM.
-		this.say(con, targetRoom || room, arg);
+		this.say(targetRoom || room, arg);
 	},
 
 	//Executes arbitrary javascript. Only dev can use it.
-	js: function(arg, by, room, con)
+	js: function(arg, by, room)
 	{
 		try
 		{
 			let result = eval(arg.trim());
-			this.say(con, room, JSON.stringify(result));
+			this.say(room, JSON.stringify(result));
 		}
 		catch (e)
 		{
-			this.say(con, room, e.name + ": " + e.message);
+			this.say(room, e.name + ": " + e.message);
 		}
 	},
 
-	kill: function(arg, by, room, con)
+	kill: function(arg, by, room)
 	{
+		console.log(config.nick + " terminated at " + new Date().toLocaleString());
 		process.exit(-1);
 	},
 
@@ -133,13 +135,13 @@ exports.commands =
 
 	//Tells the bot something to say, and it says it. Won't say commands.
 	tell: "say",
-	say: function(arg, by, room, con)
+	say: function(arg, by, room)
 	{
-		this.say(con, room, stripCommands(arg));
+		this.say(room, stripCommands(arg));
 	},
 
 	//Ask the bot a question, and it returns a random answer. Came with the bot.
-	"8ball": function(arg, by, room, con)
+	"8ball": function(arg, by, room)
 	{
 		let text;
 		const rand = ~~(20 * Math.random()) + 1;
@@ -168,18 +170,18 @@ exports.commands =
 			case 20: text = "Don't count on it."; break;
 		}
 
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 
 	//Creates a tournament with custom options. Sample teams are provided for each format when applicable.
-	tour: function(arg, by, room, con)
+	tour: function(arg, by, room)
 	{
 		let arglist = arg.split(',');
 
 		if (arg === "reset" || arg === "restart")
 		{
 			hasTourStarted = false;
-			this.say(con, room, "Tournament creation should be working again.");
+			this.say(room, "Tournament creation should be working again.");
 			console.log("Tour reset was called. Better check it out. " + new Date().toLocaleString());
 			return;
 		}
@@ -188,11 +190,11 @@ exports.commands =
 		{
 			if (by.charAt(0) === " ")
 			{
-				this.say(con, room, "/pm " + by + ", VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
+				this.say(room, "/pm " + by + ", VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
 			}
 			else
 			{
-				this.say(con, room, "VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
+				this.say(room, "VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
 			}
 			return;
 		}
@@ -229,7 +231,7 @@ exports.commands =
 					break;
 				case "random":
 				case "random vgc":
-					let vgcFormats = ["vgc11", "vgc12", "vgc13", "vgc14", "vgc14.5", "vgc15", "vgc16", "vgc17", "vgc18", "sun", "moon", "ultra"];
+					let vgcFormats = ["vgc11", "vgc12", "vgc13", "vgc14", "vgc14.5", "vgc15", "vgc16", "vgc17", "vgc18"];
 					arglist[0] = vgcFormats[Math.floor(Math.random() * vgcFormats.length)];
 					break;
 				default:
@@ -249,6 +251,7 @@ exports.commands =
 						["xerneas", "kyogre", "incineroar", "amoonguss", "kartana", "tornadus", "https://pokepast.es/d51d9f1f9aeb7cd9", "GENGARboi's 1st Place Regionals Team"],
 						["kyogre", "yveltal", "incineroar", "toxicroak", "stakataka", "tapulele", "https://pokepast.es/f1920b826ec13ed8", "Spurrific's 1st Place Regionals Team"],
 						["xerneas", "groudon", "incineroar", "venusaur", "kartana", "heatran", "https://pokepast.es/e490e7d567ecfc72", "Angel Miranda's Top 4 Regionals Team"],
+						["groudon", "yveltal", "incineroar", "venusaur", "stakataka", "tapukoko", "https://pokepast.es/48ba4f586289ec2b", "HamstermaniaCZ's Top 8 Regionals Team"],
 						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-sun-series-sample-teams/", "More Sun Series Samples"]
 					];
 					break;
@@ -348,7 +351,8 @@ exports.commands =
 						["kangaskhanmega", "mawilemega", "garchomp", "salamence", "rotomheat", "gengar", "https://pokepast.es/407035b849776583", "13Yoshi37's 1st Place German Nationals Team"],
 						["kangaskhanmega", "politoed", "ludicolo", "talonflame", "aegislash", "hydreigon", "https://pokepast.es/7d9841644cefc2a5", "Evan Falco's 1st Place US Nationals Team"],
 						["mawilemega", "politoed", "ludicolo", "gothitelle", "scrafty", "hydreigon", "https://pokepast.es/2b439540bae471c5", "Wolfey's 9th Place Worlds Team"],
-						["tyranitarmega", "raichu", "azumarill", "amoonguss", "aegislash", "talonflame", "https://pokepast.es/986e23007de8f81b", "Baz Anderson's 1st Place NB Invitational Team"]
+						["tyranitarmega", "raichu", "azumarill", "amoonguss", "aegislash", "talonflame", "https://pokepast.es/986e23007de8f81b", "Baz Anderson's 1st Place NB Invitational Team"],
+						["charizardmegay", "sawk", "weavile", "gengar", "aggron", "staraptor", "https://pokepast.es/c8c8278dda9fb868", "linkyoshimario's Top 16 Worlds Team"]
 					];
 					break;
 				case "vgc13":
@@ -370,7 +374,7 @@ exports.commands =
 					tourformat = "gen5gbudoubles";
 					tourname = "[Gen 5] VGC 2012";
 					formatname = "VGC 2012";
-					tourrules = "-tornadus+defiant, -thundurus+defiant, -landorus+sheerforce, -snivy+contrary, -servine+contrary, -serperior+contrary, -tepig+thickfat, -pignite+thickfat, -emboar+reckless, -oshawott+shellarmor, -dewott+shellarmor, -samurott+shellarmor, -patrat+analytic, -watchog+analytic, -lillipup+runaway, -herdier+scrappy, -stoutland+scrappy, -purrloin+prankster, -liepard+prankster, -pansage+overgrow, -simisage+overgrow, -pansear+blaze, -simisear+blaze, -panpour+torrent, -simipour+torrent, -tympole+waterabsorb, -palpitoad+waterabsorb, -seismitoad+waterabsorb, -cottonee+chlorophyll, -whimsicott+chlorophyll, -petilil+leafguard, -lilligant+leafguard, -karrablast+noguard, -escavalier+overcoat, -shelmet+overcoat, -accelgor+unburden, -venipede+quickfeet, -whirlipede+quickfeet, -scolipede+quickfeet, -pidove+rivalry, -tranquill+rivalry, -unfezant+rivalry, -sigilyph+tintedlens, -ducklett+hydration, -swanna+hydration, -emolga+motordrive, -basculin+moldbreaker, -basculinbluestriped+moldbreaker, -alomomola+regenerator, -stunfisk+sandveil, -tirtouga+swiftswim, -carracosta+swiftswim, -elgyem+analytic, -beheeyem+analytic, -pawniard+pressure, -bisharp+pressure, -joltik+swarm, -galvantula+swarm, -solosis+regenerator, -duosion+regenerator, -reuniclus+regenerator, -golett+noguard, -golurk+noguard, -heatmor+whitesmoke, -durant+truant, -maractus+stormdrain, -dwebble+weakarmor, -crustle+weakarmor, -sandile+angerpoint, -krokorok+angerpoint, -krookodile+angerpoint, -drilbur+moldbreaker, -excadrill+moldbreaker, - druddigon+moldbreaker, -vanillite+weakarmor, -vanillish+weakarmor, -vanilluxe+weakarmor, -klang+clearbody, -klinklang+clearbody, -axew+unnerve, -fraxure+unnerve, -haxorus+unnerve, -audino+klutz, -throh+moldbreaker, -sawk+moldbreaker, -scraggy+intimidate, -scrafty+intimidate, -timburr+ironfist, -gurdurr+ironfist, -conkeldurr+ironfist, -beedrill+sniper, -weedle+runaway, -paras+damp, -parasect+damp, -venonat+runaway, -venomoth+wonderskin, -grimer+poisontouch, -muk+poisontouch, -pineco+overcoat, -forretress+overcoat, -wurmple+runaway, -beautifly+rivalry, -dustox+compoundeyes, -seedot+pickpocket, -nuzleaf+pickpocket, -shiftry+pickpocket, -nincada+runaway, -ninjask+infiltrator, -gulpin+gluttony, -swalot+gluttony, -kricketot+runaway, -kricketune+technician, -combee+hustle, -vespiquen+unnerve, -ekans+unnerve, -arbok+unnerve, -aipom+skilllink, -ambipom+skilllink, -shroomish+quickfeet, -breloom+technician, -budew+leafguard, -roselia+leafguard, -roserade+technician, -zangoose+toxicboost, -seviper+infiltrator, -pinsir+moxie, -snorlax+gluttony, -heracross+moxie, -turtwig+shellarmor, -grotle+shellarmor, -torterra+shellarmor, -chimchar+ironfist, -monferno+ironfist, -infernape+ironfist, -piplup+defiant, -prinplup+defiant, -empoleon+defiant, -gothita+shadowtag, -gothorita+shadowtag, -gothitelle+shadowtag, -serperior+dragonpulse, -emboar+firepunch, -emboar+helpinghand, -emboar+heatwave, -emboar+ironhead, -emboar+lowkick, -emboar+superpower, -emboar+thunderpunch, -samurott+helpinghand, -samurott+icywind, -samurott+superpower, -watchog+firepunch, -watchog+helpinghand, -watchog+icepunch, -watchog+lowkick, -watchog+thunderpunch, -watchog+zenheadbutt, -stoutland+ironhead, -stoutland+superpower, -liepard+darkpulse, -liepard+foulplay, -liepard+trick, -simisage+gigadrain, -simisage+helpinghand, -simisage+lowkick, -simisage+superpower, -simisear+firepunch, -simisear+heatwave, -simisear+helpinghand, -simisear+lowkick, -simisear+superpower, -simipour+helpinghand, -simipour+icepunch, -simipour+icywind, -simipour+lowkick, -simipour+superpower, -musharna+helpinghand, -musharna+skillswap, -musharna+trick, -unfezant+heatwave, -gigalith+earthpower, -gigalith+ironhead, -gigalith+superpower, -swoobat+gigadrain, -swoobat+heatwave, -swoobat+helpinghand, -swoobat+roost, -swoobat+skillswap, -swoobat+skyattack, -swoobat+tailwind, -swoobat+trick, -swoobat+zenheadbutt, -excadrill+earthpower, -excadrill+ironhead, -audino+firepunch, -audino+helpinghand, -audino+icepunch, -audino+icywind, -audino+lowkick, -audino+skillswap, -audino+thunderpunch, -audino+zenheadbutt, -conkeldurr+firepunch, -conkeldurr+helpinghand, -conkeldurr+icepunch, -conkeldurr+thunderpunch, -seismitoad+earthpower, -seismitoad+icepunch, -seismitoad+icywind, -seismitoad+lowkick, -throh+firepunch, -throh+helpinghand, -throh+icepunch, -throh+lowkick, -throh+superpower, -throh+thunderpunch, -sawk+firepunch, -sawk+helpinghand, -sawk+icepunch, -sawk+lowkick, -sawk+superpower, -sawk+thunderpunch, -leavanny+gigadrain, -leavanny+helpinghand, -scolipede+superpower, -scolipede+bug bite, -basculin+icywind, -basculin+superpower, -basculin+zenheadbutt, -basculinbluestriped+icywind, -basculinbluestriped+superpower, -basculinbluestriped+zenheadbutt, -krookodile+darkpulse, -krookodile+dragonpulse, -krookodile+earthpower, -krookodile+lowkick, -krookodile+superpower, -darmanitan+firepunch, -darmanitan+heatwave, -darmanitan+superpower, -darmanitan+zenheadbutt, -maractus+helpinghand, -crustle+bugbite, -scrafty+darkpulse, -scrafty+dragonpulse, -scrafty+firepunch, -scrafty+foulplay, -scrafty+icepunch, -scrafty+ironhead, -scrafty+lowkick, -scrafty+thunderpunch, -scrafty+zenheadbutt, -sigilyph+darkpulse, -sigilyph+heatwave, -sigilyph+icywind, -sigilyph+roost, -sigilyph+skillswap, -sigilyph+skyattack, -sigilyph+tailwind, -sigilyph+trick, -sigilyph+zenheadbutt, -cofagrigus+darkpulse, -cofagrigus+skillswap, -cofagrigus+trick, -carracosta+earthpower, -carracosta+icywind, -carracosta+ironhead, -carracosta+lowkick, -carracosta+superpower, -archeops+dragonpulse, -archeops+earthpower, -archeops+heatwave, -archeops+roost, -archeops+skyattack, -archeops+tailwind, -garbodor+darkpulse, -garbodor+gigadrain, -zoroark+darkpulse, -zoroark+foulplay, -zoroark+lowkick, -zoroark+trick, -cinccino+helpinghand, -gothitelle+foulplay, -gothitelle+helpinghand, -gothitelle+skillswap, -gothitelle+trick, -gothitelle+zenheadbutt, -reuniclus+firepunch, -reuniclus+helpinghand, -reuniclus+icepunch, -reuniclus+skillswap, -reuniclus+superpower, -reuniclus+thunderpunch, -reuniclus+trick, -reuniclus+zenheadbutt, -swanna+icywind, -swanna+roost, -swanna+skyattack, -swanna+tailwind, -vanilluxe+icywind, -sawsbuck+gigadrain, -emolga+helpinghand, -emolga+roost, -emolga+tailwind, -amoonguss+foulplay, -jellicent+darkpulse, -jellicent+gigadrain, -jellicent+icywind, -jellicent+trick, -alomomola+helpinghand, -alomomola+icywind, -galvantula+bugbite, -galvantula+gigadrain, -ferrothorn+gigadrain, -eelektross+firepunch, -eelektross+gigadrain, -eelektross+superpower, -eelektross+thunderpunch, -beheeyem+trick, -haxorus+superpower, -haxorus+lowkick, -beartic+lowkick, -accelgor+bugbite, -stunfisk+electroweb, -stunfisk+foulplay, -mienshao+helpinghand, -druddigon+firepunch, -druddigon+heatwave, -druddigon+ironhead, -druddigon+thunderpunch, -golurk+drainpunch, -golurk+firepunch, -golurk+icepunch, -golurk+icywind, -golurk+lowkick, -golurk+superpower, -golurk+thunderpunch, -golurk+zenheadbutt, -bisharp+foulplay, -bisharp+lowkick, -bouffalant+superpower, -bouffalant+zenheadbutt, -braviary+heatwave, -braviary+superpower, -mandibuzz+foulplay, -mandibuzz+heatwave, --heatmor+gigadrain, -durant+endeavor, -durant+superpower, -hydreigon+heatwave, -hydreigon+roost, -hydreigon+superpower, -hydreigon+tailwind, -volcarona+gigadrain, -volcarona+roost, -volcarona+tailwind, -cobalion+zenheadbutt, -terrakion+zenheadbutt, -terrakion+ironhead, -virizion+superpower, -virizion+zenheadbutt, -tornadus+foulplay, -tornadus+heatwave, -tornadus+icywind, -tornadus+superpower, -thundurus+foulplay, -thundurus+superpower, -thundurus+thunderpunch, -landorus+earthpower, -landorus+superpower, -beedrill+drillrun, -dewgong+drillrun, -lapras+drillrun, -nidoking+drillrun, -rapidash+drillrun, -seaking+drillrun, -dunsparce+drillrun, -forretress+drillrun, -hitmontop+drillrun, -claydol+drillrun, -escavalier+drillrun, -alakazam+foulplay, -hypno+foulplay, -electrode+foulplay, -gengar+foulplay, -persian+foulplay, -mr.mime+foulplay, -ninetales+foulplay, -porygon-z+foulplay, -slowbro+foulplay, -slowking+foulplay, -ariados+foulplay, -porygon2+foulplay, -xatu+foulplay, -sudowoodo+foulplay, -ambipom+foulplay, -umbreon+foulplay, -weavile+foulplay, -tyranitar+foulplay, -mightyena+foulplay, -mawile+foulplay, -cacturne+foulplay, -banette+foulplay, -absol+foulplay, -mismagius+foulplay, -purugly+foulplay, -spiritomb+foulplay, -toxicroak+foulplay, -rotom+foulplay, -rotom-wash+foulplay, -rotom-frost+foulplay, -rotom-heat+foulplay, -rotom-cut+foulplay, -rotom-fan+foulplay, -squirtle+followme, -wartortle+followme, -blastoise+followme, -venusaur+weatherball, -sableye+octazooka, -custapberry";
+					tourrules = "-tornadus+defiant, -thundurus+defiant, -landorus+sheerforce, -tornadustherian, -thundurustherian, -landorustherian, -politoed+drizzle+icywind, -politoed+drizzle+helpinghand, -snivy+contrary, -servine+contrary, -serperior+contrary, -tepig+thickfat, -pignite+thickfat, -emboar+reckless, -oshawott+shellarmor, -dewott+shellarmor, -samurott+shellarmor, -patrat+analytic, -watchog+analytic, -lillipup+runaway, -herdier+scrappy, -stoutland+scrappy, -purrloin+prankster, -liepard+prankster, -pansage+overgrow, -simisage+overgrow, -pansear+blaze, -simisear+blaze, -panpour+torrent, -simipour+torrent, -tympole+waterabsorb, -palpitoad+waterabsorb, -seismitoad+waterabsorb, -cottonee+chlorophyll, -whimsicott+chlorophyll, -petilil+leafguard, -lilligant+leafguard, -karrablast+noguard, -escavalier+overcoat, -shelmet+overcoat, -accelgor+unburden, -venipede+quickfeet, -whirlipede+quickfeet, -scolipede+quickfeet, -pidove+rivalry, -tranquill+rivalry, -unfezant+rivalry, -sigilyph+tintedlens, -ducklett+hydration, -swanna+hydration, -emolga+motordrive, -basculin+moldbreaker, -basculinbluestriped+moldbreaker, -alomomola+regenerator, -stunfisk+sandveil, -tirtouga+swiftswim, -carracosta+swiftswim, -elgyem+analytic, -beheeyem+analytic, -pawniard+pressure, -bisharp+pressure, -joltik+swarm, -galvantula+swarm, -solosis+regenerator, -duosion+regenerator, -reuniclus+regenerator, -golett+noguard, -golurk+noguard, -heatmor+whitesmoke, -durant+truant, -maractus+stormdrain, -dwebble+weakarmor, -crustle+weakarmor, -sandile+angerpoint, -krokorok+angerpoint, -krookodile+angerpoint, -drilbur+moldbreaker, -excadrill+moldbreaker, - druddigon+moldbreaker, -vanillite+weakarmor, -vanillish+weakarmor, -vanilluxe+weakarmor, -klang+clearbody, -klinklang+clearbody, -axew+unnerve, -fraxure+unnerve, -haxorus+unnerve, -audino+klutz, -throh+moldbreaker, -sawk+moldbreaker, -scraggy+intimidate, -scrafty+intimidate, -timburr+ironfist, -gurdurr+ironfist, -conkeldurr+ironfist, -beedrill+sniper, -weedle+runaway, -paras+damp, -parasect+damp, -venonat+runaway, -venomoth+wonderskin, -grimer+poisontouch, -muk+poisontouch, -pineco+overcoat, -forretress+overcoat, -wurmple+runaway, -beautifly+rivalry, -dustox+compoundeyes, -seedot+pickpocket, -nuzleaf+pickpocket, -shiftry+pickpocket, -nincada+runaway, -ninjask+infiltrator, -gulpin+gluttony, -swalot+gluttony, -kricketot+runaway, -kricketune+technician, -combee+hustle, -vespiquen+unnerve, -ekans+unnerve, -arbok+unnerve, -aipom+skilllink, -ambipom+skilllink, -shroomish+quickfeet, -breloom+technician, -budew+leafguard, -roselia+leafguard, -roserade+technician, -zangoose+toxicboost, -seviper+infiltrator, -pinsir+moxie, -snorlax+gluttony, -heracross+moxie, -turtwig+shellarmor, -grotle+shellarmor, -torterra+shellarmor, -chimchar+ironfist, -monferno+ironfist, -infernape+ironfist, -piplup+defiant, -prinplup+defiant, -empoleon+defiant, -gothita+shadowtag, -gothorita+shadowtag, -gothitelle+shadowtag, -serperior+dragonpulse, -emboar+firepunch, -emboar+helpinghand, -emboar+heatwave, -emboar+ironhead, -emboar+lowkick, -emboar+superpower, -emboar+thunderpunch, -samurott+helpinghand, -samurott+icywind, -samurott+superpower, -watchog+firepunch, -watchog+helpinghand, -watchog+icepunch, -watchog+lowkick, -watchog+thunderpunch, -watchog+zenheadbutt, -stoutland+ironhead, -stoutland+superpower, -liepard+darkpulse, -liepard+foulplay, -liepard+trick, -simisage+gigadrain, -simisage+helpinghand, -simisage+lowkick, -simisage+superpower, -simisear+firepunch, -simisear+heatwave, -simisear+helpinghand, -simisear+lowkick, -simisear+superpower, -simipour+helpinghand, -simipour+icepunch, -simipour+icywind, -simipour+lowkick, -simipour+superpower, -musharna+helpinghand, -musharna+skillswap, -musharna+trick, -unfezant+heatwave, -gigalith+earthpower, -gigalith+ironhead, -gigalith+superpower, -swoobat+gigadrain, -swoobat+heatwave, -swoobat+helpinghand, -swoobat+roost, -swoobat+skillswap, -swoobat+skyattack, -swoobat+tailwind, -swoobat+trick, -swoobat+zenheadbutt, -excadrill+earthpower, -excadrill+ironhead, -audino+firepunch, -audino+helpinghand, -audino+icepunch, -audino+icywind, -audino+lowkick, -audino+skillswap, -audino+thunderpunch, -audino+zenheadbutt, -conkeldurr+firepunch, -conkeldurr+helpinghand, -conkeldurr+icepunch, -conkeldurr+thunderpunch, -seismitoad+earthpower, -seismitoad+icepunch, -seismitoad+icywind, -seismitoad+lowkick, -throh+firepunch, -throh+helpinghand, -throh+icepunch, -throh+lowkick, -throh+superpower, -throh+thunderpunch, -sawk+firepunch, -sawk+helpinghand, -sawk+icepunch, -sawk+lowkick, -sawk+superpower, -sawk+thunderpunch, -leavanny+gigadrain, -leavanny+helpinghand, -scolipede+superpower, -scolipede+bug bite, -basculin+icywind, -basculin+superpower, -basculin+zenheadbutt, -basculinbluestriped+icywind, -basculinbluestriped+superpower, -basculinbluestriped+zenheadbutt, -krookodile+darkpulse, -krookodile+dragonpulse, -krookodile+earthpower, -krookodile+lowkick, -krookodile+superpower, -darmanitan+firepunch, -darmanitan+heatwave, -darmanitan+superpower, -darmanitan+zenheadbutt, -maractus+helpinghand, -crustle+bugbite, -scrafty+darkpulse, -scrafty+dragonpulse, -scrafty+firepunch, -scrafty+foulplay, -scrafty+icepunch, -scrafty+ironhead, -scrafty+lowkick, -scrafty+thunderpunch, -scrafty+zenheadbutt, -sigilyph+darkpulse, -sigilyph+heatwave, -sigilyph+icywind, -sigilyph+roost, -sigilyph+skillswap, -sigilyph+skyattack, -sigilyph+tailwind, -sigilyph+trick, -sigilyph+zenheadbutt, -cofagrigus+darkpulse, -cofagrigus+skillswap, -cofagrigus+trick, -carracosta+earthpower, -carracosta+icywind, -carracosta+ironhead, -carracosta+lowkick, -carracosta+superpower, -archeops+dragonpulse, -archeops+earthpower, -archeops+heatwave, -archeops+roost, -archeops+skyattack, -archeops+tailwind, -garbodor+darkpulse, -garbodor+gigadrain, -zoroark+darkpulse, -zoroark+foulplay, -zoroark+lowkick, -zoroark+trick, -cinccino+helpinghand, -gothitelle+foulplay, -gothitelle+helpinghand, -gothitelle+skillswap, -gothitelle+trick, -gothitelle+zenheadbutt, -reuniclus+firepunch, -reuniclus+helpinghand, -reuniclus+icepunch, -reuniclus+skillswap, -reuniclus+superpower, -reuniclus+thunderpunch, -reuniclus+trick, -reuniclus+zenheadbutt, -swanna+icywind, -swanna+roost, -swanna+skyattack, -swanna+tailwind, -vanilluxe+icywind, -sawsbuck+gigadrain, -emolga+helpinghand, -emolga+roost, -emolga+tailwind, -amoonguss+foulplay, -jellicent+darkpulse, -jellicent+gigadrain, -jellicent+icywind, -jellicent+trick, -alomomola+helpinghand, -alomomola+icywind, -galvantula+bugbite, -galvantula+gigadrain, -ferrothorn+gigadrain, -eelektross+firepunch, -eelektross+gigadrain, -eelektross+superpower, -eelektross+thunderpunch, -beheeyem+trick, -haxorus+superpower, -haxorus+lowkick, -beartic+lowkick, -accelgor+bugbite, -stunfisk+electroweb, -stunfisk+foulplay, -mienshao+helpinghand, -druddigon+firepunch, -druddigon+heatwave, -druddigon+ironhead, -druddigon+thunderpunch, -golurk+drainpunch, -golurk+firepunch, -golurk+icepunch, -golurk+icywind, -golurk+lowkick, -golurk+superpower, -golurk+thunderpunch, -golurk+zenheadbutt, -bisharp+foulplay, -bisharp+lowkick, -bouffalant+superpower, -bouffalant+zenheadbutt, -braviary+heatwave, -braviary+superpower, -mandibuzz+foulplay, -mandibuzz+heatwave, --heatmor+gigadrain, -durant+endeavor, -durant+superpower, -hydreigon+heatwave, -hydreigon+roost, -hydreigon+superpower, -hydreigon+tailwind, -volcarona+gigadrain, -volcarona+roost, -volcarona+tailwind, -cobalion+zenheadbutt, -terrakion+zenheadbutt, -terrakion+ironhead, -virizion+superpower, -virizion+zenheadbutt, -tornadus+foulplay, -tornadus+heatwave, -tornadus+icywind, -tornadus+superpower, -thundurus+foulplay, -thundurus+superpower, -thundurus+thunderpunch, -landorus+earthpower, -landorus+superpower, -beedrill+drillrun, -dewgong+drillrun, -lapras+drillrun, -nidoking+drillrun, -rapidash+drillrun, -seaking+drillrun, -dunsparce+drillrun, -forretress+drillrun, -hitmontop+drillrun, -claydol+drillrun, -escavalier+drillrun, -alakazam+foulplay, -hypno+foulplay, -electrode+foulplay, -gengar+foulplay, -persian+foulplay, -mr.mime+foulplay, -ninetales+foulplay, -porygon-z+foulplay, -slowbro+foulplay, -slowking+foulplay, -ariados+foulplay, -porygon2+foulplay, -xatu+foulplay, -sudowoodo+foulplay, -ambipom+foulplay, -umbreon+foulplay, -weavile+foulplay, -tyranitar+foulplay, -mightyena+foulplay, -mawile+foulplay, -cacturne+foulplay, -banette+foulplay, -absol+foulplay, -mismagius+foulplay, -purugly+foulplay, -spiritomb+foulplay, -toxicroak+foulplay, -rotom+foulplay, -rotom-wash+foulplay, -rotom-frost+foulplay, -rotom-heat+foulplay, -rotom-cut+foulplay, -rotom-fan+foulplay, -squirtle+followme, -wartortle+followme, -blastoise+followme, -venusaur+weatherball, -sableye+octazooka, -custapberry";
 					formatDescription = "VGC 2012 was a National Pokedex format like 2013. It was played on Black and White, since BW2 had not been released yet outside of Japan. Notably, there was no access to Therian formes of the Genies, Hidden Abilities of the Genies, Breloom, Conkeldurr, and many other Unova Pokemon, and no access to BW2 move tutor moves. Create teams for VGC 2012 by selecting \"[Gen 5] GBU Doubles\" in the teambuilder.";
 					sampleTeams = [
 						["cresselia", "metagross", "hydreigon", "garchomp", "tyranitar", "rotomwash", "https://pokepast.es/7b7face31d5575cf", "Ray Rizzo's 1st Place Worlds Team"],
@@ -392,7 +396,7 @@ exports.commands =
 						["krookodile", "thundurus", "tornadus", "krookodile", "scrafty", "eelektross", "https://pokepast.es/6db94e5e6af31877", "Matty's 2nd Place Worlds Team"],
 						["scrafty", "amoonguss", "jellicent", "tornadus", "terrakion", "thundurus", "https://pokepast.es/2d17b779cae664ef", "RubeNCB's Top 4 Worlds Team"],
 						["amoonguss", "cofagrigus", "whimsicott", "gigalith", "jellicent", "conkeldurr", "https://pokepast.es/71bd8e687834292e", "CakeOfSpan's Regional Trick Room Team"],
-						["whimsicott", "terrakion", "thundurus", "tornadus", "scrafty", "jellicent", "https://pokepast.es/c885935048b41661", "Generic TerraCott Team"]
+						["whimsicott", "terrakion", "thundurus", "tornadus", "scrafty", "jellicent", "https://pokepast.es/683eed7f443c962e", "Generic TerraCott Team"]
 					];
 					break;
 				case "corsola":
@@ -469,20 +473,20 @@ exports.commands =
 				arglist[3] = "1";
 			}
 
-			this.say(con, room, "/tour create " + tourformat + ", " + arglist[1] + ", " + arglist[2] + ", " + arglist[3]);
+			this.say(room, "/tour create " + tourformat + ", " + arglist[1] + ", " + arglist[2] + ", " + arglist[3]);
 
 			if (tourname)
 			{
-				this.say(con, room, "/tour name " + tourname);
+				this.say(room, "/tour name " + tourname);
 			}
 			if (tourrules)
 			{
-				this.say(con, room, "/tour rules " + tourrules);
+				this.say(room, "/tour rules " + tourrules);
 			}
 			//Note: this will always display tournote, even if the tour wasn't started because of invalid data.
 			if (tournote)
 			{
-				this.say(con, room, "/wall " + tournote);
+				this.say(room, "/wall " + tournote);
 			}
 
 			/* HTML boiler plate for tour helper
@@ -523,19 +527,19 @@ exports.commands =
 					htmlText += "<font size = \"1\">(" + sampleTeams[i][j+2] + ")</font></a> <br>"; //description
 				}
 				htmlText += "</details>";
-				this.say(con, room, "/addhtmlbox " + htmlText);
+				this.say(room, "/addhtmlbox " + htmlText);
 			}
-			this.say(con, room, "/tour autostart 2");
-			this.say(con, room, "/tour autodq 0.75");
+			this.say(room, "/tour autostart 2");
+			this.say(room, "/tour autodq 0.75");
 		}
 		else
 		{
-			this.say(con, room, "A tournament has already been started.");
+			this.say(room, "A tournament has already been started.");
 		}
 	},
 
 	//Applies a random insult to the target user.
-	insult: function(arg, by, room, con)
+	insult: function(arg, by, room)
 	{
 		let arglist = arg.split(',');
 
@@ -606,14 +610,14 @@ exports.commands =
 		if (text == undefined)
 		{
 			text = arglist[0] + " is bad and should feel bad.";
-			this.say(con, room, "/pm " + by + ", You entered an invalid insult number, probably. Valid insult numbers are 0-" + (insultList.length - 1) + ".");
+			this.say(room, "/pm " + by + ", You entered an invalid insult number, probably. Valid insult numbers are 0-" + (insultList.length - 1) + ".");
 		}
 
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 
 	//Randomly picks one of my very funny jokes.
-	joke: function(arg, by, room, con)
+	joke: function(arg, by, room)
 	{
 		let jokeList = [
 			"What's the difference between a jeweler and a jailor? One sells watches, and the other watches cells!",
@@ -641,7 +645,7 @@ exports.commands =
 			];
 
 		let jokeNum = parseInt(arg);
-		if (arg === "")
+		if (!arg)
 		{
 			let rand = Math.floor(jokeList.length * Math.random());
 			jokeNum = rand;
@@ -651,35 +655,35 @@ exports.commands =
 		if (text == undefined)
 		{
 			text = "le epic funny joke.";
-			this.say(con, room, "/pm " + by + ", You entered an invalid joke number, probably. Valid joke numbers are 0-" + (jokeList.length - 1) + ".");
+			this.say(room, "/pm " + by + ", You entered an invalid joke number, probably. Valid joke numbers are 0-" + (jokeList.length - 1) + ".");
 		}
 
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 
 	//Displays a notice in case I need to tweak the bot.
-	notice: function(arg, by, room, con)
+	notice: function(arg, by, room)
 	{
 		let text = "/wall Please note that " + config.nick + " may be tweaked periodically. Please be patient if a tour is canceled; it's probably just to test something.";
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 
 	//Displays recent VGC usage stats. Also works in PM.
 	usgae: "usage",
-	usage: function(arg, by, room, con)
+	usage: function(arg, by, room)
 	{
 		let text;
 		let vgcstats = "https://vgcstats.com";
 		let bsUsage = "https://3ds.pokemon-gl.com/battle/usum/#wcs";
-		let psUsage = "https://www.smogon.com/stats/2018-12/gen7vgc2019moonseries-1760.txt";
-		let psDetailedUsage = "https://www.smogon.com/stats/2018-12/moveset/gen7vgc2019moonseries-1760.txt";
+		let psUsage = "https://www.smogon.com/stats/2019-01/gen7vgc2019moonseries-1760.txt";
+		let psDetailedUsage = "https://www.smogon.com/stats/2019-01/moveset/gen7vgc2019moonseries-1760.txt";
 
 		if (room.charAt(0) === ' ' || room.charAt(0) === ",")
 		{
-			this.say(con, room, "/pm " + by + ", VGC Stats Website: " + vgcstats);
-			this.say(con, room, "/pm " + by + ", Battle Spot Usage: " + bsUsage);
-			this.say(con, room, "/pm " + by + ", Showdown Usage Stats: " + psUsage);
-			this.say(con, room, "/pm " + by + ", Showdown Detailed Usage Stats: " + psDetailedUsage);
+			this.say(room, "/pm " + by + ", VGC Stats Website: " + vgcstats);
+			this.say(room, "/pm " + by + ", Battle Spot Usage: " + bsUsage);
+			this.say(room, "/pm " + by + ", Showdown Usage Stats: " + psUsage);
+			this.say(room, "/pm " + by + ", Showdown Detailed Usage Stats: " + psDetailedUsage);
 			return false;
 		}
 		else
@@ -687,66 +691,75 @@ exports.commands =
 			//See usage.html
 			text = "/addhtmlbox <strong>VGC Usage Stats!</strong> <ul style = \"list-style: outside; margin: 0px 0px 0px -20px\"><li><a href=\"" + vgcstats + "\">VGC Stats Website</a></li><li><a href=\"" + bsUsage + "\">Battle Spot Usage</a></li><li><a href=\"" + psUsage + "\">Showdown Usage</a></li><li><a href=\"" + psDetailedUsage + "\">Showdown Detailed Usage</a></li></ul>";
 		}
-		this.say(con, room, text);
+		this.say(room, text);
 	},
 
-	icpa: function(arg, by, room, con)
+	icpa: function(arg, by, room)
 	{
-		this.say(con, room, "/addhtmlbox The ICPA is an intercollegiate Pokemon league where colleges play bo3 VGC matches to determine the best college. The <a href = \"https://trainertower.com/forums/threads/2018-icpa-fall-series-sign-up-thread.5235/\">Fall Series session signups </a>end on November 2nd. More information can be found in the link provided.");
+		this.say(room, "/addhtmlbox The ICPA is an intercollegiate Pokemon league where colleges play bo3 VGC matches to determine the best college. The <a href = \"https://trainertower.com/forums/threads/2018-icpa-fall-series-sign-up-thread.5235/\">Fall Series session signups </a>end on November 2nd. More information can be found in the link provided.");
 	},
 
-	uno: function(arg, by, room, con)
+	uno: function(arg, by, room)
 	{
-		this.say(con, room, "/uno create 10");
-		this.say(con, room, "/uno autostart 30");
-		this.say(con, room, "/uno timer 10");
+		this.say(room, "/uno create 10");
+		this.say(room, "/uno autostart 30");
+		this.say(room, "/uno timer 10");
 	},
 
 	objective: "objectively",
-	objectively: function(arg, by, room, con)
+	objectively: function(arg, by, room)
 	{
 		let text = "Something is \"objective\" when it is true independently of personal feelings or opinions, instead based on hard facts. For example, Flamethrower objectively has higher accuracy than Fire Blast, and Fire Blast objectively has a higher Base Power than Flamethrower.<br><br>";
 		text += "Subjective refers to personal preferences, opinions, or feelings. Anything subjective is subject to interpretation. For example, you might think Flamethrower is better than Fire Blast, but another player might think Fire Blast is better; the opinion is subjective.<br><br>";
 		text += "That's not to say opinions are bad! It's also ok to forth reasoning into your opinions and defend them. It's not correct, however, to say some opinion you have is objectively true.";
-		this.say(con, room, "/addhtmlbox " + text);
+		this.say(room, "/addhtmlbox " + text);
 	},
 
-	mish: function(arg, by, room, con)
+	mish: function(arg, by, room)
 	{
 		if (room === "vgc")
 		{
 			return false; //Policy is not to mish in VGC
 		}
-		this.say(con, room, "mish mish");
+		this.say(room, "mish mish");
 
 		let rand = Math.floor(Math.random() * 10);
 		if (rand === 1) //10% chance to roll
 		{
-			this.say(con, room, "/addhtmlbox <img src=\"https://images-ext-1.discordapp.net/external/jZ8e-Lcp6p2-GZb8DeeyShSvxT2ghTDz7nLMX8c1SKs/https/cdn.discordapp.com/attachments/320922154092986378/410460728999411712/getmished.png?width=260&height=300\" height=300 width=260>");
+			this.say(room, "/addhtmlbox <img src=\"https://images-ext-1.discordapp.net/external/jZ8e-Lcp6p2-GZb8DeeyShSvxT2ghTDz7nLMX8c1SKs/https/cdn.discordapp.com/attachments/320922154092986378/410460728999411712/getmished.png?width=260&height=300\" height=300 width=260>");
 		}
 	},
 
-	blog: function(arg, by, room, con)
+	blog: function(arg, by, room)
 	{
-		this.say(con, room, "/addhtmlbox <a href=\"https://tinyurl.com/2fcpre6\">ansena's blog</a>");
+		this.say(room, "/addhtmlbox <a href=\"https://tinyurl.com/2fcpre6\">ansena's blog</a>");
 	},
 
-	chef: function(arg, by, room, con)
+	chef: function(arg, by, room)
 	{
-		this.say(con, room, "!dt sheer cold");
+		this.say(room, "!dt sheer cold");
 	},
 
-	platypus: function(arg, by, room, con)
+	platypus: function(arg, by, room)
 	{
-		this.say(con, room, "/addhtmlbox <img src=\"https://cdn.discordapp.com/attachments/394481120806305794/506966120482209792/platyprowl.gif\" height=175 width=170><br><a href = \"https://www.youtube.com/watch?v=VaNbDYGmGwc\">Platypus on the Prowl</a>");
+		this.say(room, "/addhtmlbox <img src=\"https://cdn.discordapp.com/attachments/394481120806305794/506966120482209792/platyprowl.gif\" height=175 width=170><br><a href = \"https://www.youtube.com/watch?v=VaNbDYGmGwc\">Platypus on the Prowl</a>");
 	},
 
-	mynameis: function(arg, by, room, con)
+	mynameis: function(arg, by, room)
 	{
-		this.say(con, room, "CasedVictory");
+		this.say(room, "CasedVictory");
 	},
-	nom: function(arg, by, room, con)
+	nom: function(arg, by, room)
 	{
-		this.say(con, room, "Player not recognized. Perhaps you meant **seaco**.");
+		this.say(room, "Player not recognized. Perhaps you meant **seaco**.");
+	},
+	ezrael: function(arg, by, room)
+	{
+		this.say(room, ":teamjon:");
+	},
+	diglett: function(arg, by, room)
+	{
+		let text = "<marquee scrollamount=\"15\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1e9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ee.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ec.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f1.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ea.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <\/marquee> <center> <span style=\"font-size: 0.9em;\">Moves Like Diglett | Eye of the Diglett | I\'ll Make a Diglett Out of You<\/span> <\/center> <center> Click the Diglett -&gt; <a href=\"https:\/\/youtu.be\/6Zwu8i4bPV4\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> <a href=\"https:\/\/youtu.be\/8LYwT9Nf1Ic\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> <a href=\"https:\/\/youtu.be\/uzdvnB8SJV8\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> &lt;- Click the Diglett <\/center> <marquee scrollamount=\"15\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1e9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ee.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ec.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f1.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ea.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <\/marquee>";
+		this.say(room, "/addhtmlbox " + text);
 	}
 };
