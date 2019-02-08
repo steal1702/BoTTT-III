@@ -8,18 +8,18 @@ BoTTT III requires [node.js](http://nodejs.org/) to run. It has the same version
 
 Next up is cloning this bot. This can be done in two ways: cloning it via `git` or downloading as ZIP.
 
-To install dependencies, run:
+To install dependencies, in the directory the source code is in, run:
 
     npm install
 
-Rename `config-example.js` to `config.js` and edit the variables in the file, such as the bot's name and password.
+Rename `config-example.js` to `config.js` and edit the variables in the file using a text editor, like the bot's name and password.
 To change the commands that the bot responds to, edit `commands.js`.
 
 Now, to start the bot, use:
 
     node main.js
 
-Some information will be shown, and it will automatically join the room(s) you specified if no error occurs.
+Some information will be shown, and it will automatically join the room(s) you specified if no error occurs. To set up permissions so you can access the bot's commands, review the `canUse` function in parser.js. Note that if the bot is not of sufficient rank, certain commands will not work.
 
 Development
 -----------
