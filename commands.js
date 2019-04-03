@@ -2,7 +2,7 @@
  * This is the file where the bot commands are located.
  *
  * Modified by DaWoblefet for use with BoTTT III with original work by TalkTakesTime, Quinella, and Morfent.
- *
+ * testing change
  * Useful references:
  * https://github.com/Zarel/Pokemon-Showdown/blob/1ef018c93bbfe8d86cb895b57151b27a080abccb/chat-commands.js
  * https://github.com/Zarel/Pokemon-Showdown/tree/1ef018c93bbfe8d86cb895b57151b27a080abccb/chat-plugins
