@@ -45,6 +45,17 @@ exports.parse =
 	ranks: {},
 	msgQueue: [],
 
+	bestOfThree:
+	{
+		havePlayerData: false,
+		playerOne: "Player 1",
+		playerOneTeam: [],
+		playerTwo: "Player 2",
+		playerTwoTeam: [],
+		games: [],
+		wins: []
+	},
+
 	data: function(data)
 	{
 		if (data.substr(0, 1) === 'a')
@@ -75,7 +86,15 @@ exports.parse =
 		{
 			if (spl[1].substr(1, 4) === "init")
 			{
-				return ok("joined " + spl[2].substr(7));
+				let roomJoined = spl[1].substr(6);
+				if (roomJoined === "battle")
+				{
+					ok("joined battle " + spl[2].substr(7));
+				}
+				else
+				{
+					return ok("joined " + spl[2].substr(7));
+				}
 			}
 			//Edge case for tour end
 			try
@@ -290,7 +309,40 @@ exports.parse =
 			case "raw":
 				if (spl[2].startsWith("<strong class=\"message-throttle-notice\">"))
 				{
-					console.log("Message sent too fast at: " + new Date().toLocaleString() + ".");
+					console.log("Message sent too fast at: " + new Date().toLocaleString() + ". MESSAGE_THROTTLE in main.js is likely set too low.");
+				}
+				break;
+			case "win":
+				this.bestOfThree.wins.push(spl[2]);
+				this.say(room, "/leave");
+				this.displayNPAbox();
+				break;
+			case "player":
+				if (spl[2] === "p1")
+				{
+					this.bestOfThree.playerOne = spl[3];
+				}
+				else
+				{
+					this.bestOfThree.playerTwo = spl[3];
+				}
+				break;
+			case "poke":
+				if (!this.bestOfThree.havePlayerData)
+				{
+					if (spl[2] === "p1")
+					{
+						this.bestOfThree.playerOneTeam.push(spl[3].substring(0, spl[3].indexOf(',')));
+					}
+					else
+					{
+						this.bestOfThree.playerTwoTeam.push(spl[3].substring(0, spl[3].indexOf(',')));
+						if (this.bestOfThree.playerTwoTeam.length === 6)
+						{
+							this.bestOfThree.havePlayerData = true;
+							this.displayNPAbox();
+						}
+					}
 				}
 				break;
 		}
@@ -398,7 +450,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "npa", "thinking"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -412,6 +464,14 @@ exports.parse =
 			}
 		}
 
+		if (cmd === "npa" && room.charAt(0) === ',')
+		{
+			if (["chalkey", "dualistx", "tan", "acenowak", "avatarfede", "azazelthegod", "cablevgc", "drfidget", "fumitobr", "gramgus", "jeanmarc", "kingofmars", "pd0nz", "platypusvgc", "pokealex", "renevgc", "rufflesbag", "tman", "xenobladehero"].indexOf(toID(room)) >= 0);
+			{
+				canUse = true;
+			}
+		}
+
 		if (toID(user) === "dawoblefet")
 		{
 			if (cmd === "reload" || cmd === "js" || cmd === "kill")
@@ -420,7 +480,7 @@ exports.parse =
 			}
 		}
 
-		if (userRank === ROOMOWNER || ["dawoblefet", "blarajan", "kaori", "makiri"].indexOf(toID(room)) >= 0)
+		if (userRank === ROOMOWNER || ["dawoblefet", "blarajan", "kaori"].indexOf(toID(room)) >= 0)
 		{
 			if (cmd === "custom")
 			{
@@ -550,7 +610,7 @@ exports.parse =
 			Came with this PM bc of its controversial nature: Please do not use the abbreviation \"pdon\" for Primal Groudon. Say it out loud and you'll realize why. You can just say Groudon or don, and everyone will know what Pokemon you're talking about.
 			*/
 
-			if ((pointVal > 0 || roomData.triggeredAutocorrect >= 3)&& now - roomData.lastAction >= ACTION_COOLDOWN)
+			if (((pointVal > 0 || roomData.triggeredAutocorrect >= 3)&& now - roomData.lastAction >= ACTION_COOLDOWN))
 			{
 				let cmd = "mute";
 				//Defaults to the next punishment in config.punishVals instead of repeating the same action (so a second warn-worthy offense would result in a mute instead of a warn, and the third an hourmute, etc)
@@ -594,8 +654,11 @@ exports.parse =
 					userData.zeroTol++; //Getting muted or higher increases your zero tolerance level (warns do not)
 				}
 				roomData.lastAction = now;
-				this.say(room, '/' + cmd + " " + user + muteMessage);
-				console.log(cmd + ": " + user + " at " + new Date().toLocaleString());
+				if (room !== "npa")
+				{
+					this.say(room, '/' + cmd + " " + user + muteMessage);
+					console.log(cmd + ": " + user + " at " + new Date().toLocaleString());
+				}
 			}
 		}
 	},
@@ -657,5 +720,48 @@ exports.parse =
 			}
 			uncache = newuncache;
 		} while (uncache.length > 0);
+	},
+	displayNPAbox: function()
+	{
+		let htmlText = "<center> <img src=\"https:\/\/i.imgur.com\/YzEVGvU.png\" width=\"30\" height=\"30\"> &nbsp;&nbsp; <span style=\"font-weight: bold; font-size: 20px; text-decoration: underline\">";
+		htmlText += this.bestOfThree.playerOne + " vs. " + this.bestOfThree.playerTwo;
+		htmlText += "<\/span> &nbsp;&nbsp; <img src=\"https:\/\/i.imgur.com\/YzEVGvU.png\" width=\"30\" height=\"30\"> <\/center> <br> <center>";
+		for (let i = 0; i < 6; i++)
+		{
+			htmlText += "<psicon pokemon = \"" + this.bestOfThree.playerOneTeam[i] + "\"><\/psicon>";
+		}
+		htmlText += "|";
+		for (let i = 0; i < 6; i++)
+		{
+			htmlText += "<psicon pokemon = \"" + this.bestOfThree.playerTwoTeam[i] + "\"><\/psicon>";
+		}
+		htmlText += "<\/center> <center style=\"font-size: 15px\">";
+		for (let i = 0; i < 3; i++)
+		{
+			htmlText += "<a href=\"" + this.bestOfThree.games[i] + "\">Game " + (i+1) + "<\/a>";
+			if (this.bestOfThree.wins[i] !== undefined)
+			{
+				htmlText += " (" + this.bestOfThree.wins[i] + " - <span style=\"font-weight: bold; color:green\"> Win<\/span>)"
+			}
+			htmlText += "<br>";
+		}
+
+		//logic for checking if bo3 is complete
+		if (this.bestOfThree.wins.length == 3 || (this.bestOfThree.wins.length === 2 && this.bestOfThree.wins[0] === this.bestOfThree.wins[1]))
+		{
+			if (this.bestOfThree.wins[0] === this.bestOfThree.wins[1]) //if it was a 2-0
+			{
+				this.say(this.bestOfThree.games[2].substring(this.bestOfThree.games[2].lastIndexOf('/') + 1, this.bestOfThree.games[2].length), "/leave"); //leave game three if it was a 2-0
+				htmlText += "<br>" + this.bestOfThree.wins[0] + " wins!";
+			}
+			else
+			{
+				htmlText += "<br>" + this.bestOfThree.wins[2] + " wins!";
+			}
+			this.bestOfThree.havePlayerData = false;
+
+		}
+		htmlText += "</center>";
+		this.say("npa", "/addhtmlbox " + htmlText);
 	},
 };

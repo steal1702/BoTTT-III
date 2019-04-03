@@ -293,8 +293,8 @@ let connect = function(retry)
 			let message = response.utf8Data;
 			recv(message);
 
-			/* SockJS messages sent from the server begin with 'a';
-			this filters out other SockJS response types (heartbeats in particular)*/
+			// SockJS messages sent from the server begin with 'a'
+			// this filters out other SockJS response types (heartbeats in particular)
 			if (message.charAt(0) !== 'a') return false;
 			Parse.data(message);
 		});
@@ -313,4 +313,5 @@ let connect = function(retry)
 	info("connecting to " + conStr + " - secondary protocols: " + (config.secprotocols.join(", ") || "none"));
 	ws.connect(conStr, config.secprotocols);
 };
+
 connect();
