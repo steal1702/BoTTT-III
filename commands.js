@@ -2,7 +2,7 @@
  * This is the file where the bot commands are located.
  *
  * Modified by DaWoblefet for use with BoTTT III with original work by TalkTakesTime, Quinella, and Morfent.
- * 
+ *
  * Useful references:
  * https://github.com/Zarel/Pokemon-Showdown/blob/1ef018c93bbfe8d86cb895b57151b27a080abccb/chat-commands.js
  * https://github.com/Zarel/Pokemon-Showdown/tree/1ef018c93bbfe8d86cb895b57151b27a080abccb/chat-plugins
@@ -205,7 +205,7 @@ exports.commands =
 			let tourname;
 			let tourrules;
 			let tournote;
-			const defaultTour = "moon";
+			const defaultTour = "ultra";
 			let formatname;
 			let formatDescription;
 			let sampleTeams; //2D Array with each array having 6 team members, followed by pokepaste link, followed by description.
@@ -244,6 +244,7 @@ exports.commands =
 				case "sun":
 				case "sun series":
 					tourformat = "gen7vgc2019sunseries";
+					tourrules = "-Custap Berry, -Micle Berry, -Jaboca Berry, -Rowap Berry, -Passimian+Defiant, -Oranguru+Symbiosis";
 					formatname = "VGC 2019 Sun Series";
 					formatDescription = "The first third of VGC 2019 was Sun Series. Like all three formats in VGC 2019, you can use up to two restricted legendary Pokemon per team (e.g. Kyogre, Xerneas, Lunala, etc.). However, all Z-moves, Mega Evolutions, and the Primal Orbs are banned.";
 					sampleTeams = [
@@ -261,13 +262,21 @@ exports.commands =
 					formatname = "VGC 2019 Moon Series";
 					formatDescription = "Moon Series allows up to two restricted legendary Pokemon, and unlike Sun Series, Z-moves are allowed. However, Mega Evolutions, Primal Orbs, and Ultra Necrozma are all banned.";
 					sampleTeams = [
-						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-moon-series-sample-teams/", "Moon Series Samples"]
+						["xerneas", "lunala", "smeargle", "incineroar", "stakataka", "tsareena", "https://pokepast.es/dcd39a7c47343e97", "EmbC's 1st Place Australia Internationals Team"],
+						["xerneas", "groudon", "incineroar", "tapukoko", "amoonguss", "volcarona", "https://pokepast.es/219d14b47c930571", "Spurrific's Top 4 Australia Internationals Team"],
+						["lunala", "groudon", "incineroar", "tapufini", "stakataka", "tsareena", "https://pokepast.es/e5fe7bd11d94cffd", "Lexicon's 2nd Place Regionals Team"],
+						["kyogre", "hooh", "ludicolo", "raichu", "incineroar", "ferrothorn", "https://pokepast.es/e57dd4e6e100974d", "Weeblewobs's 1st Place Regionals Team"],
+						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-moon-series-sample-teams/", "More Moon Series Samples"]
 					];
 					break;
 				case "ultra":
 				case "ultra series":
 					tourformat = "gen7vgc2019ultraseries";
 					formatname = "VGC 2019 Ultra Series";
+					formatDescription = "Ultra Series allows up to two restricted Pokemon, in addition to Mega Evolution, Primal Orbs, and Z-crystals, unlike previous series in VGC 2019.";
+					sampleTeams = [
+						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "Ultra Series Sample Teams"]
+					];
 					break;
 				case "vgc18":
 				case "vgc2018":
@@ -543,10 +552,10 @@ exports.commands =
 	{
 		let arglist = arg.split(',');
 
-		//Gives myself and the bot insult immunity.
-		if (toID(arglist[0]) === "dawoblefet" || toID(arglist[0]) === toID(config.nick))
+		//Gives myself and the bot insult immunity. Prevents sneaky UTF-8 similar looking characters intended to avoid the insult.
+		if (toID(arglist[0]).includes("dawoblefet") || toID(arglist[0]).includes(toID(config.nick)) || /[^\u0000-\u007F]/g.test(arglist[0]))
 		{
-			arglist[0] = by;
+			arglist[0] = by.substring(1, by.length);
 		}
 
 		let insultList = [
@@ -561,7 +570,8 @@ exports.commands =
 			arglist[0] + "'s social life is as exciting as the derivative of e^^x^^.",
 			"The intersection of " + arglist[0] + "'s brain and reality is the null set.",
 			"Trying to understand " + arglist[0] + "'s teambuilding decisions is more complex than solving the P vs. NP problem.",
-			arglist[0] + " is the type of person who stares at a can of orange juice because it says \"concentrate\"."
+			arglist[0] + " is the type of person who stares at a can of orange juice because it says \"concentrate\".",
+			arglist[0] + " uses Facade Snorlax on teams with Tapu Fini."
 		];
 
 		let douInsultList = [
@@ -675,10 +685,10 @@ exports.commands =
 		let text;
 		let vgcstats = "https://vgcstats.com";
 		let bsUsage = "https://3ds.pokemon-gl.com/battle/usum/#wcs";
-		let psUsage = "https://www.smogon.com/stats/2019-01/gen7vgc2019moonseries-1760.txt";
-		let psDetailedUsage = "https://www.smogon.com/stats/2019-01/moveset/gen7vgc2019moonseries-1760.txt";
+		let psUsage = "https://www.smogon.com/stats/2019-03/gen7vgc2019ultraseries-1760.txt";
+		let psDetailedUsage = "https://www.smogon.com/stats/2019-03/moveset/gen7vgc2019ultraseries-1760.txt";
 
-		if (room.charAt(0) === ' ' || room.charAt(0) === ",")
+		if (by.charAt(0) === ' ' || room.charAt(0) === ",")
 		{
 			this.say(room, "/pm " + by + ", VGC Stats Website: " + vgcstats);
 			this.say(room, "/pm " + by + ", Battle Spot Usage: " + bsUsage);
@@ -692,6 +702,46 @@ exports.commands =
 			text = "/addhtmlbox <strong>VGC Usage Stats!</strong> <ul style = \"list-style: outside; margin: 0px 0px 0px -20px\"><li><a href=\"" + vgcstats + "\">VGC Stats Website</a></li><li><a href=\"" + bsUsage + "\">Battle Spot Usage</a></li><li><a href=\"" + psUsage + "\">Showdown Usage</a></li><li><a href=\"" + psDetailedUsage + "\">Showdown Detailed Usage</a></li></ul>";
 		}
 		this.say(room, text);
+	},
+
+	npa: function(arg, by, room)
+	{
+		if (room !== "npa" && room.charAt(0) !== ',')
+		{
+			this.say(room, "Discuss NPA matches in <<npa>>. Read more about NPA by typing /rfaq npa.");
+		}
+		else
+		{
+			if (arg === "reset")
+			{
+				Parse.bestOfThree.havePlayerData = false;
+				this.say(room, "NPA match automation should be working again.");
+				return;
+			}
+			let games = arg.split(', ');
+			if (games.length !== 3)
+			{
+				this.say(room, "You must give a link to all three games, separated by commas.");
+				return;
+			}
+			if (Parse.bestOfThree.havePlayerData)
+			{
+				this.say(room, "Only one NPA set may be managed by " + config.nick + " at a time.");
+				return;
+			}
+			//Initialize data
+			Parse.bestOfThree.wins = [];
+			Parse.bestOfThree.games = [];
+			Parse.bestOfThree.playerOneTeam = [];
+			Parse.bestOfThree.playerTwoTeam = [];
+
+			//Join the games
+			for (let i = 0; i < games.length; i++)
+			{
+				Parse.bestOfThree.games.push(games[i]);
+				this.say(room, "/j " + games[i].substring(games[i].lastIndexOf('/') + 1, games[i].length));
+			}
+		}
 	},
 
 	icpa: function(arg, by, room)
@@ -711,7 +761,7 @@ exports.commands =
 	{
 		let text = "Something is \"objective\" when it is true independently of personal feelings or opinions, instead based on hard facts. For example, Flamethrower objectively has higher accuracy than Fire Blast, and Fire Blast objectively has a higher Base Power than Flamethrower.<br><br>";
 		text += "Subjective refers to personal preferences, opinions, or feelings. Anything subjective is subject to interpretation. For example, you might think Flamethrower is better than Fire Blast, but another player might think Fire Blast is better; the opinion is subjective.<br><br>";
-		text += "That's not to say opinions are bad! It's also ok to forth reasoning into your opinions and defend them. It's not correct, however, to say some opinion you have is objectively true.";
+		text += "That's not to say opinions are bad! It's also ok to put forth reasoning into your opinions and defend them. It's not correct, however, to say some opinion you have is objectively true.";
 		this.say(room, "/addhtmlbox " + text);
 	},
 
@@ -761,5 +811,10 @@ exports.commands =
 	{
 		let text = "<marquee scrollamount=\"15\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani\/diglett.gif\" class=\"fa fa-spin\" width=\"43\" height=\"35\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1e9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ee.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ec.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f1.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ea.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <\/marquee> <center> <span style=\"font-size: 0.9em;\">Moves Like Diglett | Eye of the Diglett | I\'ll Make a Diglett Out of You<\/span> <\/center> <center> Click the Diglett -&gt; <a href=\"https:\/\/youtu.be\/6Zwu8i4bPV4\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> <a href=\"https:\/\/youtu.be\/8LYwT9Nf1Ic\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> <a href=\"https:\/\/youtu.be\/uzdvnB8SJV8\"><img src=\"https:\/\/images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com\/intermediary\/f\/578a8319-92b6-4d81-9d5f-d6914e6535a0\/d5o541m-54dae5d4-710c-44d4-a898-71ea71d7bd28.jpg\" width=\"85\" height=\"100\"><\/a> &lt;- Click the Diglett <\/center> <marquee scrollamount=\"15\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1e9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ee.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ec.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f1.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1ea.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/images.emojiterra.com\/twitter\/v11\/512px\/1f1f9.png\" width=\"43\" height=\"35\" class=\"fa fa-spin\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <img src=\"https:\/\/play.pokemonshowdown.com\/sprites\/xyani-back\/diglett.gif\" class=\"fa fa-spin\" width=\"44\" height=\"35\"> <\/marquee>";
 		this.say(room, "/addhtmlbox " + text);
-	}
+	},
+	thinking: function(arg, by, room)
+	{
+		let text = "<img src = \"https://i.imgur.com/vXbla1s.png\" width=\"24\" height=\"27\">";
+		this.say(room, "/addhtmlbox " + text);
+	},
 };
