@@ -45,7 +45,7 @@ exports.parse =
 	ranks: {},
 	msgQueue: [],
 
-	bestOfThree:
+	/*bestOfThree:
 	{
 		havePlayerData: false,
 		playerOne: "Player 1",
@@ -54,7 +54,7 @@ exports.parse =
 		playerTwoTeam: [],
 		games: [],
 		wins: []
-	},
+	},*/
 
 	data: function(data)
 	{
@@ -313,22 +313,22 @@ exports.parse =
 				}
 				break;
 			case "win":
-				this.bestOfThree.wins.push(spl[2]);
+				//this.bestOfThree.wins.push(spl[2]);
 				this.say(room, "/leave");
-				this.displayNPAbox();
+				//this.displayNPAbox();
 				break;
 			case "player":
-				if (spl[2] === "p1")
+				/*if (spl[2] === "p1")
 				{
 					this.bestOfThree.playerOne = spl[3];
 				}
 				else
 				{
 					this.bestOfThree.playerTwo = spl[3];
-				}
+				}*/
 				break;
 			case "poke":
-				if (!this.bestOfThree.havePlayerData)
+				/*if (!this.bestOfThree.havePlayerData)
 				{
 					if (spl[2] === "p1")
 					{
@@ -343,7 +343,7 @@ exports.parse =
 							this.displayNPAbox();
 						}
 					}
-				}
+				}*/
 				break;
 		}
 	},
@@ -450,7 +450,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa", "npa", "thinking"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "thinking", "b"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -458,19 +458,19 @@ exports.parse =
 
 		if (userRank >= DRIVER)
 		{
-			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael"].indexOf(cmd) >= 0)
+			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael", "twitter"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
 		}
 
-		if (cmd === "npa" && room.charAt(0) === ',')
+		/*if (cmd === "npa" && room.charAt(0) === ',')
 		{
 			if (["chalkey", "dualistx", "tan", "acenowak", "avatarfede", "azazelthegod", "cablevgc", "drfidget", "fumitobr", "gramgus", "jeanmarc", "kingofmars", "pd0nz", "platypusvgc", "pokealex", "renevgc", "rufflesbag", "tman", "xenobladehero"].indexOf(toID(room)) >= 0);
 			{
 				canUse = true;
 			}
-		}
+		}*/
 
 		if (toID(user) === "dawoblefet")
 		{
@@ -492,7 +492,7 @@ exports.parse =
 		switch (cmd)
 		{
 			case "tour":
-				if (arg === "samples" || (toID(user) === "legavgc" && arg === "vgc13")) {canUse = true;}
+				if (arg === "samples" || (toID(user) === "legavgc" && arg === "vgc13") || (toID(user) === "akinokaede" && !arg)) {canUse = true;}
 			case "blog":
 				if (toID(user) === "ansena" || toID(user) === "dawoblefet") {canUse = true;}
 				break;
@@ -654,11 +654,8 @@ exports.parse =
 					userData.zeroTol++; //Getting muted or higher increases your zero tolerance level (warns do not)
 				}
 				roomData.lastAction = now;
-				if (room !== "npa")
-				{
-					this.say(room, '/' + cmd + " " + user + muteMessage);
-					console.log(cmd + ": " + user + " at " + new Date().toLocaleString());
-				}
+				this.say(room, '/' + cmd + " " + user + muteMessage);
+				console.log(cmd + ": " + user + " at " + new Date().toLocaleString());
 			}
 		}
 	},
@@ -721,7 +718,7 @@ exports.parse =
 			uncache = newuncache;
 		} while (uncache.length > 0);
 	},
-	displayNPAbox: function()
+	/*displayNPAbox: function()
 	{
 		let htmlText = "<center> <img src=\"https:\/\/i.imgur.com\/YzEVGvU.png\" width=\"30\" height=\"30\"> &nbsp;&nbsp; <span style=\"font-weight: bold; font-size: 20px; text-decoration: underline\">";
 		htmlText += this.bestOfThree.playerOne + " vs. " + this.bestOfThree.playerTwo;
@@ -763,5 +760,5 @@ exports.parse =
 		}
 		htmlText += "</center>";
 		this.say("npa", "/addhtmlbox " + htmlText);
-	},
+	},*/
 };
