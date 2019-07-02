@@ -666,7 +666,10 @@ exports.commands =
 			"As I handed Dad his 50th birthday card, he looked at me with tears in his eyes and said, \"You know, one would have been enough.\"",
 			"I'd tell you a Fibonacci joke, but it's probably as bad as the last two you've heard combined.",
 			"Why don't Americans switch from using pounds to kilograms? Because there'd be a mass confusion.",
-			"Where do fish go to work at? The offish!"
+			"Where do fish go to work at? The offish!",
+			"What do you call two friends who both like math? Algebros!",
+			"What happened to the man that injested plutonium? He got atomicache!",
+			"My sister bet me $100 I couldn't build a car out of spaghetti. You should have seen her face when I drove right pasta!"
 			];
 
 		let jokeNum = parseInt(arg);
@@ -700,8 +703,8 @@ exports.commands =
 		let text;
 		let vgcstats = "https://vgcstats.com";
 		let bsUsage = "https://3ds.pokemon-gl.com/battle/usum/#wcs";
-		let psUsage = "https://www.smogon.com/stats/2019-04/gen7vgc2019ultraseries-1760.txt";
-		let psDetailedUsage = "https://www.smogon.com/stats/2019-04/moveset/gen7vgc2019ultraseries-1760.txt";
+		let psUsage = "https://www.smogon.com/stats/2019-05/gen7vgc2019ultraseries-1760.txt";
+		let psDetailedUsage = "https://www.smogon.com/stats/2019-05/moveset/gen7vgc2019ultraseries-1760.txt";
 
 		if (by.charAt(0) === ' ' || room.charAt(0) === ",")
 		{
@@ -814,6 +817,10 @@ exports.commands =
 	{
 		this.say(room, "CasedVictory");
 	},
+	epic: function(arg, by, room)
+	{
+		this.say(room, "gaming");
+	},
 	nom: function(arg, by, room)
 	{
 		this.say(room, "Player not recognized. Perhaps you meant **seaco**.");
@@ -837,4 +844,33 @@ exports.commands =
 		let text = "\ud83c\udd71\ufe0f";
 		this.say(room, "/addhtmlbox " + text);
 	},
+	dynamax: async function(arg, by, room)
+	{
+		let pokemonSprite = "http://play.pokemonshowdown.com/sprites/xyani/" + arg + ".gif";
+
+		let probe = require('probe-image-size');
+		let height;
+		let width;
+		try
+		{
+			await probe(pokemonSprite).then(result =>
+			{
+				height = result.height;
+				width = result.width;
+			});
+		}
+		catch (err)
+		{
+			pokemonSprite = "http://play.pokemonshowdown.com/sprites/rby/missingno.png";
+			height = 96;
+			width = 96;
+		}
+
+		let text = '<div style = "position: relative"><img src="https://steamuserimages-a.akamaihd.net/ugc/933813375174289297/19F16DBEDED8FF15F8D969EE714BD1319149EB9D/" height='
+		+ (height * 5) + ' width=' + (width * 5) + '>' 
+		+ '<img src = "' + pokemonSprite + '" height=' + (height * 5) + ' width=' + (width * 5)
+		+ ' style = "position: absolute; top: 0%; left: 0%"></div>';
+
+		this.say(room, "/addhtmlbox " + text);
+	}
 };
