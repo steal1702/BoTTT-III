@@ -283,7 +283,6 @@ exports.parse =
 				}
 				by = this.trimStatus(by);
 
-				this.logNick(toID(by), toID(spl[3]));
 				break;
 			case 'J': case 'j': //User joining the room
 				by = spl[2];
@@ -784,18 +783,4 @@ exports.parse =
 		this.say("npa", "/addhtmlbox " + htmlText);
 	},*/
 	//B emoji: \ud83c\udd71\ufe0f
-	logNick: function(name1, name2)
-	{
-		if (name1 === name2) return;
-		let data = name1 + "," + name2 + "\n";
-
-		//a+ flag signifies to put pointer at end of file.
-		fs.writeFile("ShowdownAlts.csv", data, {flag: "a+"}, (err) =>
-		{
-		    if (err)
-		    {
-				console.log(err + ": " + inspect(err));
-			}
-		})
-	},
 };
