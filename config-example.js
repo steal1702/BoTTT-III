@@ -15,6 +15,13 @@ exports.serverid = "showdown";
 exports.nick = "";
 exports.pass = "";
 exports.avatar = "";
+exports.status = "";
+
+/* The owner of the bot. This is set up to only have one owner, and
+ * the account here has access to all commands defined in commands.js,
+ * in addition to being the only one who can access most admin commands.  */
+
+ exports.owner = "";
 
 /* Rooms that should be joined in quotes, separated by commas. Showdown
  * policy is not to join lobby, so please don't do that. */

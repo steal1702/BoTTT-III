@@ -226,8 +226,8 @@ exports.parse =
 				if (data) req.write(data);
 				req.end();
 				break;
-			case "updateuser":
-				if (spl[2] !== config.nick) return;
+			case "updateuser":	
+				if (toID(spl[2]) !== toID(config.nick)) return;
 
 				if (spl[3] !== '1')
 				{
@@ -237,6 +237,7 @@ exports.parse =
 
 				ok("logged in as " + spl[2]);
 				send("|/avatar " + config.avatar);
+				send("|/status " + config.status);
 
 				//Joining the rooms
 				for (let i = 0, len = config.rooms.length; i < len; i++)
@@ -280,6 +281,9 @@ exports.parse =
 				{
 					this.ranks[room] = by.charAt(0);
 				}
+				by = this.trimStatus(by);
+
+				this.logNick(toID(by), toID(spl[3]));
 				break;
 			case 'J': case 'j': //User joining the room
 				by = spl[2];
@@ -430,6 +434,7 @@ exports.parse =
 	{
 		let canUse = false;
 		let userRank;
+		let userID = toID(this.trimStatus(user));
 
 		if (rankMap.get(user.charAt(0)) === -1)
 		{
@@ -450,7 +455,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa", "thinking", "b"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -458,7 +463,7 @@ exports.parse =
 
 		if (userRank >= DRIVER)
 		{
-			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael", "twitter"].indexOf(cmd) >= 0)
+			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael", "dynamax"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -472,15 +477,8 @@ exports.parse =
 			}
 		}*/
 
-		if (toID(user) === "dawoblefet")
-		{
-			if (cmd === "reload" || cmd === "js" || cmd === "kill")
-			{
-				canUse = true;
-			}
-		}
-
-		if (userRank === ROOMOWNER || ["dawoblefet", "blarajan", "kaori"].indexOf(toID(room)) >= 0)
+		let roomOwners = ["dawoblefet", "blarajan", "kaori"];
+		if (userRank === ROOMOWNER || roomOwners.indexOf(toID(room)) >= 0)
 		{
 			if (cmd === "custom")
 			{
@@ -492,30 +490,38 @@ exports.parse =
 		switch (cmd)
 		{
 			case "tour":
-				if (arg === "samples" || (toID(user) === "legavgc" && arg === "vgc13") || (toID(user) === "akinokaede" && !arg)) {canUse = true;}
+				if (arg === "samples" || (userID === "legavgc" && arg === "vgc13") || (userID === "akinokaede" && !arg)) {canUse = true;}
 			case "blog":
-				if (toID(user) === "ansena" || toID(user) === "dawoblefet") {canUse = true;}
+				if (userID === "ansena") {canUse = true;}
 				break;
 			case "icpa":
-				if (toID(user).substr(0,12) === "torwildheart" || toID(user).substr(0,4) == "icpa") {canUse = true;}
+				if (userID.substr(0,12) === "torwildheart" || userID.substr(0,4) == "icpa") {canUse = true;}
 				break;
 			case "chef":
-				if (toID(user).substr(0,4) === "chef") {canUse = true;}
+				if (userID.substr(0,4) === "chef") {canUse = true;}
 				break;
 			case "platypus":
-				if (toID(user) === "platypusvgc" || toID(user) === "awesomeplatypus") {canUse = true;}
+				if (userID === "platypusvgc" || userID === "awesomeplatypus") {canUse = true;}
 				break;
 			case "mynameis":
-				if (toID(user) === "casedvictory") {canUse = true;}
+				if (userID === "casedvictory") {canUse = true;}
 				break;
 			case "nom":
-				if (toID(user) === "seaco") {canUse = true;}
+				if (userID === "seaco") {canUse = true;}
 				break;
 			case "ezrael":
-				if (toID(user) === "ezrael") {canUse = true;}
+				if (userID === "ezrael") {canUse = true;}
 				break;
+			case "epic":
+				if (userID === "animusvgc") {canUse = true;}
 			default:
 				break;
+		}
+
+		//Owner has access to every command.
+		if (userID === toID(config.owner))
+		{
+			canUse = true;
 		}
 
 		return canUse;
@@ -718,6 +724,22 @@ exports.parse =
 			uncache = newuncache;
 		} while (uncache.length > 0);
 	},
+	trimStatus: function(username)
+	{
+		let result;
+		username = username.split('@');
+
+		if (username[0].charAt(0) === '') //this was a mod applying their status
+		{
+			result = username[1];
+		}
+		else //this was anyone else applying a status
+		{
+			result = username[0];
+		}
+
+		return result;
+	},
 	/*displayNPAbox: function()
 	{
 		let htmlText = "<center> <img src=\"https:\/\/i.imgur.com\/YzEVGvU.png\" width=\"30\" height=\"30\"> &nbsp;&nbsp; <span style=\"font-weight: bold; font-size: 20px; text-decoration: underline\">";
@@ -761,4 +783,19 @@ exports.parse =
 		htmlText += "</center>";
 		this.say("npa", "/addhtmlbox " + htmlText);
 	},*/
+	//B emoji: \ud83c\udd71\ufe0f
+	logNick: function(name1, name2)
+	{
+		if (name1 === name2) return;
+		let data = name1 + "," + name2 + "\n";
+
+		//a+ flag signifies to put pointer at end of file.
+		fs.writeFile("ShowdownAlts.csv", data, {flag: "a+"}, (err) =>
+		{
+		    if (err)
+		    {
+				console.log(err + ": " + inspect(err));
+			}
+		})
+	},
 };
