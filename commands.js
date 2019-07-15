@@ -472,10 +472,10 @@ exports.commands =
 				case "random battle":
 				case "randombattle":
 				case "gen7randombattle":
-					this.say(con, room, "Cannot start random battle tours.");
+					this.say(room, "Cannot start random battle tours.");
 					return;
 				case "cap":
-					this.say(con, room, "Cannot start CAP tours.");
+					this.say(room, "Cannot start CAP tours.");
 					return;
 				default:
 					tourformat = arglist[0];
@@ -669,7 +669,8 @@ exports.commands =
 			"Where do fish go to work at? The offish!",
 			"What do you call two friends who both like math? Algebros!",
 			"What happened to the man that injested plutonium? He got atomicache!",
-			"My sister bet me $100 I couldn't build a car out of spaghetti. You should have seen her face when I drove right pasta!"
+			"My sister bet me $100 I couldn't build a car out of spaghetti. You should have seen her face when I drove right pasta!",
+			"Did you hear people aren't naming their daughters Karen nowadays? Soon there won't be a Karen the world.",
 			];
 
 		let jokeNum = parseInt(arg);
@@ -703,8 +704,8 @@ exports.commands =
 		let text;
 		let vgcstats = "https://vgcstats.com";
 		let bsUsage = "https://3ds.pokemon-gl.com/battle/usum/#wcs";
-		let psUsage = "https://www.smogon.com/stats/2019-05/gen7vgc2019ultraseries-1760.txt";
-		let psDetailedUsage = "https://www.smogon.com/stats/2019-05/moveset/gen7vgc2019ultraseries-1760.txt";
+		let psUsage = "https://www.smogon.com/stats/2019-06/gen7vgc2019ultraseries-1760.txt";
+		let psDetailedUsage = "https://www.smogon.com/stats/2019-06/moveset/gen7vgc2019ultraseries-1760.txt";
 
 		if (by.charAt(0) === ' ' || room.charAt(0) === ",")
 		{
@@ -820,6 +821,10 @@ exports.commands =
 	epic: function(arg, by, room)
 	{
 		this.say(room, "gaming");
+	},
+	raydon: function(arg, by, room)
+	{
+		this.say(room, "sogood");
 	},
 	nom: function(arg, by, room)
 	{
