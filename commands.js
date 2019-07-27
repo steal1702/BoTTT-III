@@ -244,6 +244,7 @@ exports.commands =
 				case "sun":
 				case "sun series":
 					tourformat = "gen7vgc2019sunseries";
+					tourname = "[Gen 7] VGC 2019 Sun Series";
 					tourrules = "-Custap Berry, -Micle Berry, -Jaboca Berry, -Rowap Berry, -Passimian+Defiant, -Oranguru+Symbiosis";
 					formatname = "VGC 2019 Sun Series";
 					formatDescription = "The first third of VGC 2019 was Sun Series. Like all three formats in VGC 2019, you can use up to two restricted legendary Pokemon per team (e.g. Kyogre, Xerneas, Lunala, etc.). However, all Z-moves, Mega Evolutions, and the Primal Orbs are banned.";
@@ -260,6 +261,7 @@ exports.commands =
 				case "moon series":
 					tourformat = "gen7vgc2019moonseries";
 					formatname = "VGC 2019 Moon Series";
+					tourname = "[Gen 7] VGC 2019 Moon Series";
 					formatDescription = "Moon Series allows up to two restricted legendary Pokemon, and unlike Sun Series, Z-moves are allowed. However, Mega Evolutions, Primal Orbs, and Ultra Necrozma are all banned.";
 					sampleTeams = [
 						["xerneas", "lunala", "smeargle", "incineroar", "stakataka", "tsareena", "https://pokepast.es/dcd39a7c47343e97", "EmbC's 1st Place Australia Internationals Team"],
@@ -272,6 +274,7 @@ exports.commands =
 				case "ultra":
 				case "ultra series":
 					tourformat = "gen7vgc2019ultraseries";
+					tourname = "[Gen 7] VGC 2019 Ultra Series";
 					formatname = "VGC 2019 Ultra Series";
 					formatDescription = "Ultra Series allows up to two restricted Pokemon, in addition to Mega Evolution, Primal Orbs, and Z-crystals, unlike previous series in VGC 2019.";
 					sampleTeams = [
@@ -281,6 +284,7 @@ exports.commands =
 				case "vgc18":
 				case "vgc2018":
 					tourformat = "gen7vgc2018";
+					tourname = "[Gen 7] VGC 2018";
 					tourules = "-Custap Berry, -Micle Berry, -Jaboca Berry, -Rowap Berry, -Passimian+Defiant, -Oranguru+Symbiosis";
 					formatname = "VGC 2018";
 					formatDescription = "VGC 2018 was the National Pokedex format for Generation VII. The \"black clover\" rule ensured players could only use Pokemon obtained in Generation VII, which regrettably banned Unown, because it is obtainable in neither Sun/Moon nor Ultra Sun/Ultra Moon without transferring.";
@@ -296,6 +300,7 @@ exports.commands =
 				case "vgc17":
 				case "vgc2017":
 					tourformat = "gen7vgc2017";
+					tourname = "[Gen 7] VGC 2017";
 					tourrules = "-Incineroar+Intimidate, -Torracat+Intimidate, -Litten+Intimidate, -Decidueye+Long Reach, -Dartrix+Long Reach, -Rowlet+Long Reach, -Primarina+Liquid Voice, -Brionne+Liquid Voice, -Popplio+Liquid Voice, -Custap Berry, -Micle Berry, -Jaboca Berry, -Rowap Berry, -Passimian+Defiant, -Oranguru+Symbiosis";
 					formatname = "VGC 2017";
 					formatDescription = "VGC 2017 was played on Pokemon Sun and Moon, and like VGC 2011 and VGC 2014 before it, it was the Regional Pokedex format of the generation. All USUM move tutor moves and other unreleased Abilities (e.g. Intimidate Incineroar) were disallowed. The new \"black clover\" replaced the old blue pentagon, forcing players to only use Pokemon obtained in Pokemon Sun and Moon for VGC 2017.";
@@ -311,6 +316,7 @@ exports.commands =
 				case "vgc16":
 				case "vgc2016":
 					tourformat = "gen6vgc2016";
+					tourname = "[Gen 6] VGC 2016";
 					formatname = "VGC 2016";
 					formatDescription = "VGC 2016 was played in ORAS and allowed up to 2 restricted legendary Pokemon on a team, opening up the door to Primal Groudon, Primal Kyogre, Mega Rayquaza, Xerneas, and more.";
 					sampleTeams = [
@@ -498,13 +504,13 @@ exports.commands =
 
 			this.say(room, "/tour create " + tourformat + ", " + arglist[1] + ", " + arglist[2] + ", " + arglist[3]);
 
-			if (tourname)
-			{
-				this.say(room, "/tour name " + tourname);
-			}
 			if (tourrules)
 			{
 				this.say(room, "/tour rules " + tourrules);
+			}
+			if (tourname)
+			{
+				this.say(room, "/tour name " + tourname);
 			}
 			//Note: this will always display tournote, even if the tour wasn't started because of invalid data.
 			if (tournote)
@@ -671,6 +677,7 @@ exports.commands =
 			"What happened to the man that injested plutonium? He got atomicache!",
 			"My sister bet me $100 I couldn't build a car out of spaghetti. You should have seen her face when I drove right pasta!",
 			"Did you hear people aren't naming their daughters Karen nowadays? Soon there won't be a Karen the world.",
+			"Why is justice best served cold? Because if it was served warm, it would be just water!"
 			];
 
 		let jokeNum = parseInt(arg);
