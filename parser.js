@@ -282,7 +282,6 @@ exports.parse =
 					this.ranks[room] = by.charAt(0);
 				}
 				by = this.trimStatus(by);
-
 				break;
 			case 'J': case 'j': //User joining the room
 				by = spl[2];
@@ -462,7 +461,7 @@ exports.parse =
 
 		if (userRank >= DRIVER)
 		{
-			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael", "dynamax"].indexOf(cmd) >= 0)
+			if (["insult", "8ball", "say", "objectively", "joke", "compliment", "mish", "uno", "chef", "platypus", "mynameis", "nom", "diglett", "ezrael", "raydon", "dynamax"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
@@ -512,7 +511,14 @@ exports.parse =
 				if (userID === "ezrael") {canUse = true;}
 				break;
 			case "epic":
-				if (userID === "animusvgc") {canUse = true;}
+				if (userID === "animusvgc" || userID === "joeux9") {canUse = true;}
+				break;
+			case "raydon":
+				if (userID === "joeux9") {canUse = true;}
+				break;
+			case "uno":
+				if (userID === "dingram") {canUse = true;}
+				break;
 			default:
 				break;
 		}
@@ -598,8 +604,8 @@ exports.parse =
 			}
 
 			//Autocorrect regexes and corresponding autocorrections
-			let autocorrectRegexes = [/(n|N)inetails/, /(m|M)eowstick/, /(c|C)owmoo/, /tylee/, /(w|W)olfie/, /(A|a)moongus([^s]|$)/];
-			let autocorrectMessages = ["Ninetales", "Meowstic", "Kommo-o", "tlyee", "Wolfey", "Amoonguss"];
+			let autocorrectRegexes = [/(n|N)inetails/, /(m|M)eowstick/, /(c|C)owmoo/, /tylee/, /(w|W)olfie/, /(A|a)moongus([^s]|$)/, /(d|d)a(w|W)obblefet/];
+			let autocorrectMessages = ["Ninetales", "Meowstic", "Kommo-o", "tlyee", "Wolfey", "Amoonguss", "DaWoblefet"];
 
 			for (let i = 0; i < autocorrectRegexes.length; i++)
 			{
