@@ -125,6 +125,31 @@ exports.commands =
 		}
 	},
 
+	//Updates bot to the latest version from git. Only dev can use it. Taken from: https://github.com/TheMezStrikes/uopbot/blob/master/commands.js
+	gitpull: function(arg, by, room)
+	{
+		let text;
+		if (config.git)
+		{
+			const child_process = require('child_process');
+			try
+			{
+				child_process.execSync('git pull ' + config.git + ' master', {stdio: 'inherit'});
+				text = "git pull successful.";
+			}
+			catch (e)
+			{
+				this.say(room, e.name + ": " + e.message);
+				text = "git pull unsuccessful.";
+			} 	
+		}
+		else
+		{
+			text = "There is no git URL specified for this bot.";
+		}
+		this.say(room, text);
+	},
+
 	kill: function(arg, by, room)
 	{
 		console.log(config.nick + " terminated at " + new Date().toLocaleString());
