@@ -894,6 +894,10 @@ exports.commands =
 		let text = "<img src = \"https://i.imgur.com/vXbla1s.png\" width=\"24\" height=\"27\">";
 		this.say(room, "/addhtmlbox " + text);
 	},
+	delet: function(arg, by, room)
+	{
+		this.say(room, by + " deleted);
+	}
 	b: function(arg, by, room)
 	{
 		let text = "\ud83c\udd71\ufe0f";
