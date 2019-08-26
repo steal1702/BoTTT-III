@@ -897,7 +897,7 @@ exports.commands =
 	delet: function(arg, by, room)
 	{
 		this.say(room, by + " deleted);
-	}
+	},
 	b: function(arg, by, room)
 	{
 		let text = "\ud83c\udd71\ufe0f";
