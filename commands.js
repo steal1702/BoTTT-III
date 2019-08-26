@@ -896,7 +896,7 @@ exports.commands =
 	},
 	delet: function(arg, by, room)
 	{
-		this.say(room, by + " deleted);
+		this.say(room, by + " **deleted**.");
 	},
 	b: function(arg, by, room)
 	{
