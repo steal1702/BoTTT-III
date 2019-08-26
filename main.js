@@ -272,19 +272,15 @@ let connect = function(retry)
 		con.on("error", function(err)
 		{
 			error("connection error: " + err);
-			//info("retrying in 20 seconds");
-			//hasTourStarted = false;
-
-			//setTimeout(function() {connect(true);}, 20000);
 		});
 
 		con.on("close", function()
 		{
 			error("connection closed: " + inspect(arguments));
-			info("retrying in 20 seconds");
+			info("retrying in " + config.timeout + " seconds");
 			hasTourStarted = false;
 
-			setTimeout(function() {connect(true);}, 20000);
+			setTimeout(function() {connect(true);}, config.timeout * 1000);
 		});
 
 		con.on("message", function(response)

@@ -57,6 +57,11 @@ exports.secprotocols = [];
  * 5 = error   */
 exports.debuglevel = 3;
 
+/* How fast the bot will attempt to reconnect after a disconnection,
+ * in seconds,Depending on your Internet speed, setting this too low
+ * may cause multiple instances of the bot to join, or not join at all. */
+exports.timeout = 20;
+
 /* Users here will never be punished by the bot. By default, all
  * users with drivers or higher will not be warned.   */
 exports.whitelist = [];
