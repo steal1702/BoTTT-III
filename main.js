@@ -113,19 +113,12 @@ function runNpm(command)
 //Check if everything that is needed is available
 try
 {
-	require("sugar");
 	require("colors");
 }
 catch (e)
 {
 	console.log("Dependencies are not installed!");
 	return runNpm("install");
-}
-
-if (!Object.select)
-{
-	console.log("Node needs to be updated!");
-	return runNpm("update");
 }
 
 //First dependencies and welcome message
