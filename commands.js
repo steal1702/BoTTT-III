@@ -182,20 +182,20 @@ exports.commands =
 		{
 			hasTourStarted = false;
 			this.say(room, "Tournament creation should be working again.");
+			this.say(room, "/pm " + by + ", Please let DaWoblefet know tours were broken.");
 			console.log("Tour reset was called. Better check it out. " + new Date().toLocaleString());
 			return;
 		}
 
 		if (arg === "samples")
 		{
+			let text = "";
 			if (by.charAt(0) === " ")
 			{
-				this.say(room, "/pm " + by + ", VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
+				text = "/pm " + by + ", ";
 			}
-			else
-			{
-				this.say(room, "VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB");
-			}
+			text += "VGC Room Tour Sample Teams: https://pastebin.com/rhFBBMMB";
+			this.say(room, text);
 			return;
 		}
 
@@ -205,11 +205,11 @@ exports.commands =
 			let tourname;
 			let tourrules;
 			let tournote;
-			const defaultTour = "ultra";
 			let formatname;
 			let formatDescription;
 			let sampleTeams; //2D Array with each array having 6 team members, followed by pokepaste link, followed by description.
-
+			const defaultTour = "ultra";
+			
 			//Handle default case, double elim, and random format options.
 			switch (arglist[0])
 			{
@@ -231,7 +231,7 @@ exports.commands =
 					break;
 				case "random":
 				case "random vgc":
-					let vgcFormats = ["vgc11", "vgc12", "vgc13", "vgc14", "vgc14.5", "vgc15", "vgc16", "vgc17", "vgc18"];
+					let vgcFormats = ["vgc11", "vgc12", "vgc13", "vgc14", "vgc14.5", "vgc15", "vgc16", "vgc17", "vgc18", "sun", "moon", "ultra"];
 					arglist[0] = vgcFormats[Math.floor(Math.random() * vgcFormats.length)];
 					break;
 				default:
@@ -241,6 +241,31 @@ exports.commands =
 			//Prepare tournament format.
 			switch (arglist[0])
 			{
+				case "ultra":
+				case "ultra series":
+					tourformat = "gen7vgc2019ultraseries";
+					tourname = "[Gen 7] VGC 2019 Ultra Series";
+					formatname = "VGC 2019 Ultra Series";
+					formatDescription = "Ultra Series allows up to two restricted Pokemon, in addition to Mega Evolution, Primal Orbs, and Z-crystals, unlike previous series in VGC 2019.";
+					sampleTeams = [
+						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "Ultra Series Sample Teams"]
+					];
+					break;
+				case "moon":
+				case "moon series":
+					tourformat = "gen7vgc2019moonseries";
+					formatname = "VGC 2019 Moon Series";
+					tourname = "[Gen 7] VGC 2019 Moon Series";
+					//tourrules = "-red orb, -blue orb, -dragon ascent, -ultranecroziumz, -Abomasite, -Absolite, -Aerodactylite, -Aggronite, -Alakazite, -Altarianite, -Ampharosite, -Audinite, -Banettite, -Beedrillite, -Blastoisinite, -Blazikenite, -Cameruptite, -Charizardite X, -Charizardite Y, -Crucibellite, -Diancite, -Galladite, -Garchompite, -Gardevoirite, -Gengarite, -Glalitite, -Gyaradosite, -Heracronite, -Houndoominite, -Kangaskhanite, -Latiasite, -Latiosite, -Lopunnite, -Lucarionite, -Manectite, -Mawilite, -Medichamite, -Metagrossite, -Mewtwonite X, -Mewtwonite Y, -Pidgeotite, -Pinsirite, -Sablenite, -Salamencite, -Sceptilite, -Scizorite, -Sharpedonite, -Slowbronite, -Steelixite, -Swampertite, -Tyranitarite, -Venusaurite";
+					formatDescription = "Moon Series allowed up to two restricted legendary Pokemon, and unlike Sun Series, Z-moves are allowed. However, Mega Evolutions, Primal Orbs, and Ultra Necrozma are all banned.";
+					sampleTeams = [
+						["xerneas", "lunala", "smeargle", "incineroar", "stakataka", "tsareena", "https://pokepast.es/dcd39a7c47343e97", "EmbC's 1st Place Australia Internationals Team"],
+						["xerneas", "groudon", "incineroar", "tapukoko", "amoonguss", "volcarona", "https://pokepast.es/219d14b47c930571", "Spurrific's Top 4 Australia Internationals Team"],
+						["lunala", "groudon", "incineroar", "tapufini", "stakataka", "tsareena", "https://pokepast.es/e5fe7bd11d94cffd", "Lexicon's 2nd Place Regionals Team"],
+						["kyogre", "hooh", "ludicolo", "raichu", "incineroar", "ferrothorn", "https://pokepast.es/e57dd4e6e100974d", "Weeblewobs's 1st Place Regionals Team"],
+						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-moon-series-sample-teams/", "More Moon Series Samples"]
+					];
+					break;
 				case "sun":
 				case "sun series":
 					tourformat = "gen7vgc2019sunseries";
@@ -256,31 +281,6 @@ exports.commands =
 						["xerneas", "groudon", "incineroar", "venusaur", "kartana", "heatran", "https://pokepast.es/e490e7d567ecfc72", "Angel Miranda's Top 4 Regionals Team"],
 						["groudon", "yveltal", "incineroar", "venusaur", "stakataka", "tapukoko", "https://pokepast.es/48ba4f586289ec2b", "HamstermaniaCZ's Top 8 Regionals Team"],
 						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-sun-series-sample-teams/", "More Sun Series Samples"]
-					];
-					break;
-				case "moon":
-				case "moon series":
-					tourformat = "gen7vgc2019moonseries";
-					formatname = "VGC 2019 Moon Series";
-					tourname = "[Gen 7] VGC 2019 Moon Series";
-					//tourrules = "-red orb, -blue orb, -dragon ascent, -ultranecroziumz, -Abomasite, -Absolite, -Aerodactylite, -Aggronite, -Alakazite, -Altarianite, -Ampharosite, -Audinite, -Banettite, -Beedrillite, -Blastoisinite, -Blazikenite, -Cameruptite, -Charizardite X, -Charizardite Y, -Crucibellite, -Diancite, -Galladite, -Garchompite, -Gardevoirite, -Gengarite, -Glalitite, -Gyaradosite, -Heracronite, -Houndoominite, -Kangaskhanite, -Latiasite, -Latiosite, -Lopunnite, -Lucarionite, -Manectite, -Mawilite, -Medichamite, -Metagrossite, -Mewtwonite X, -Mewtwonite Y, -Pidgeotite, -Pinsirite, -Sablenite, -Salamencite, -Sceptilite, -Scizorite, -Sharpedonite, -Slowbronite, -Steelixite, -Swampertite, -Tyranitarite, -Venusaurite";
-					formatDescription = "Moon Series allows up to two restricted legendary Pokemon, and unlike Sun Series, Z-moves are allowed. However, Mega Evolutions, Primal Orbs, and Ultra Necrozma are all banned.";
-					sampleTeams = [
-						["xerneas", "lunala", "smeargle", "incineroar", "stakataka", "tsareena", "https://pokepast.es/dcd39a7c47343e97", "EmbC's 1st Place Australia Internationals Team"],
-						["xerneas", "groudon", "incineroar", "tapukoko", "amoonguss", "volcarona", "https://pokepast.es/219d14b47c930571", "Spurrific's Top 4 Australia Internationals Team"],
-						["lunala", "groudon", "incineroar", "tapufini", "stakataka", "tsareena", "https://pokepast.es/e5fe7bd11d94cffd", "Lexicon's 2nd Place Regionals Team"],
-						["kyogre", "hooh", "ludicolo", "raichu", "incineroar", "ferrothorn", "https://pokepast.es/e57dd4e6e100974d", "Weeblewobs's 1st Place Regionals Team"],
-						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-moon-series-sample-teams/", "More Moon Series Samples"]
-					];
-					break;
-				case "ultra":
-				case "ultra series":
-					tourformat = "gen7vgc2019ultraseries";
-					tourname = "[Gen 7] VGC 2019 Ultra Series";
-					formatname = "VGC 2019 Ultra Series";
-					formatDescription = "Ultra Series allows up to two restricted Pokemon, in addition to Mega Evolution, Primal Orbs, and Z-crystals, unlike previous series in VGC 2019.";
-					sampleTeams = [
-						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "Ultra Series Sample Teams"]
 					];
 					break;
 				case "vgc18":
@@ -466,7 +466,7 @@ exports.commands =
 				case "vgc98":
 					tourformat = "gen7vgc2018";
 					tourname = "[Gen 7] VGC Kanto Cup";
-					tourrules = "-gourgeistsmall, -delphox, -shelmet, -frogadier, -doublade, -seviper, -nuzleaf, -lombre, -tranquill, -manaphy, -vivillonfancy, -sneasel, -basculin, -garchompmega, -trumbeak, -keldeo, -ariados, -grumpig, -golisopod, -greninjaash, -swinub, -steenee, -treecko, -tsareena, -amaura, -registeel, -cherrim, -salazzle, -throh, -wooper, -banettemega, -azelf, -bunnelby, -whismur, -pumpkaboo, -quagsire, -arceuswater, -chesnaught, -combee, -joltik, -swampert, -quilava, -scraggy, -togepi, -stufful, -golurk, -deerling, -liepard, -typenull, -petilil, -sylveon, -spiritomb, -oricoriopau, -mewtwomegax, -mewtwomegay, -feraligatr, -pumpkaboosuper, -shiftry, -medichammega, -vikavolt, -wynaut, -roselia, -pansear, -lileep, -roserade, -dragalge, -yanma, -aipom, -dartrix, -cradily, -gardevoir, -crustle, -gigalith, -virizion, -houndoom, -toxicroak, -gliscor, -salazzletotem, -lycanrocmidnight, -scizor, -igglybuff, -houndoommega, -swadloon, -wailord, -tangrowth, -arceuselectric, -mismagius, -cottonee, -stakataka, -palkia, -silvallyelectric, -gible, -magearnaoriginal, -pidove, -unown, -numel, -cobalion, -bibarel, -samurott, -feebas, -kyogre, -darkrai, -durant, -glalie, -lotad, -skarmory, -lunatone, -floatzel, -heracrossmega, -qwilfish, -genesectburn, -floette, -arceusflying, -deoxysspeed, -raikou, -ambipom, -aegislash, -trubbish, -palpitoad, -silvallydragon, -comfey, -skorupi, -greninja, -electivire, -pansage, -thundurus, -bouffalant, -silvallysteel, -bidoof, -meowstic, -lycanrocdusk, -crobat, -carracosta, -solosis, -pikipek, -relicanth, -basculinbluestriped, -hippowdon, -empoleon, -zoroark, -togedemaru, -suicune, -lanturn, -hakamoo, -latias, -braviary, -whiscash, -simisage, -boldore, -combusken, -sawk, -mienfoo, -gabite, -reshiram, -claydol, -silvallyground, -ampharos, -forretress, -mimikyubusted, -gothorita, -buizel, -gastrodon, -metang, -brionne, -sandygast, -cacnea, -gligar, -plusle, -bisharp, -marshadow, -regirock, -jumpluff, -cresselia, -phanpy, -camerupt, -chimchar, -glameow, -genesectshock, -oranguru, -smeargle, -masquerain, -gulpin, -lilligant, -manectric, -victini, -happiny, -ferroseed, -watchog, -aron, -charjabug, -bruxish, -kommoo, -meganium, -floetteeternal, -oricoriopompom, -marill, -solrock, -piplup, -rockruff, -cleffa, -lopunny, -blacephalon, -aurorus, -yungoos, -silvallygrass, -clamperl, -mudsdale, -cherubi, -silvallyfire, -stantler, -marshtomp, -mareep, -girafarig, -honchkrow, -arceusdark, -xurkitree, -stunfisk, -pichu, -noctowl, -sawsbuck, -beartic, -torkoal, -tynamo, -litleo, -miniormeteor, -breloom, -duosion, -surskit, -scrafty, -phantump, -kyogreprimal, -ledian, -thundurustherian, -slowking, -munchlax, -furfrou, -fletchinder, -lairon, -bayleef, -xerneas, -donphan, -whirlipede, -bagon, -pumpkaboosmall, -excadrill, -regigigas, -deino, -delibird, -panpour, -arceusrock, -zeraora, -tornadustherian, -abomasnow, -deoxysattack, -granbull, -heracross, -emolga, -sableye, -vivillonpokeball, -mantine, -pupitar, -espeon, -vanilluxe, -castform, -lurantis, -tropius, -rotomfan, -passimian, -sharpedomega, -chikorita, -diancie, -deoxys, -arceusfairy, -venipede, -shellos, -vikavolttotem, -politoed, -mimikyubustedtotem, -meloetta, -medicham, -zekrom, -misdreavus, -pawniard, -jirachi, -gallade, -klang, -landorustherian, -tyrantrum, -purrloin, -loudred, -silvally, -avalugg, -buneary, -minccino, -rowlet, -simipour, -beheeyem, -giratina, -larvesta, -metagrossmega, -groudon, -croconaw, -tapufini, -baltoy, -necrozmadawnwings, -eelektrik, -kyuremwhite, -rufflet, -rotomwash, -silvallyice, -kyurem, -beautifly, -delcatty, -mawilemega, -entei, -darmanitan, -elekid, -hoothoot, -necrozmaultra, -genesectdouse, -chimecho, -wormadam, -flaaffy, -exploud, -slugma, -meditite, -carbink, -audino, -chingling, -necrozma, -binacle, -flabebe, -staravia, -silvallybug, -manectricmega, -dewott, -mareanie, -turtonator, -fletchling, -swablu, -kingdra, -pangoro, -haxorus, -heatran, -tympole, -natu, -skiploom, -luxray, -lopunnymega, -milotic, -clawitzer, -probopass, -cosmog, -emboar, -eelektross, -hoppip, -mothim, -gumshoos, -skiddo, -ludicolo, -solgaleo, -barboach, -diggersby, -houndour, -mimejr, -landorus, -frillish, -crabominable, -rotom, -toucannon, -palossand, -huntail, -conkeldurr, -giratinaorigin, -arceuspsychic, -zygarde10, -gourgeistsuper, -grotle, -seismitoad, -corsola, -mewtwo, -wailmer, -silvallypsychic, -serperior, -sudowoodo, -florges, -zigzagoon, -latios, -rampardos, -hoopaunbound, -mesprit, -metagross, -swampertmega, -fennekin, -dusclops, -shinx, -scizormega, -cyndaquil, -vespiquen, -sentret, -lumineon, -banette, -blaziken, -lurantistotem, -shiinotic, -patrat, -hydreigon, -meloettapirouette, -cinccino, -fomantis, -kommoototem, -altaria, -beldum, -sunkern, -archeops, -drifloon, -sharpedo, -bronzong, -cacturne, -elgyem, -absol, -araquanidtotem, -heatmor, -slurpuff, -celebi, -barbaracle, -dwebble, -luvdisc, -silvallyfighting, -ursaring, -dhelmise, -miltank, -froslass, -rotomheat, -litten, -vullaby, -arceusfighting, -typhlosion, -murkrow, -pelipper, -vigoroth, -kartana, -ampharosmega, -archen, -aggronmega, -arceusfire, -grubbin, -trapinch, -furret, -carvanha, -swirlix, -wormadamtrash, -chandelure, -wurmple, -spewpa, -croagunk, -tirtouga, -chespin, -foongus, -pachirisu, -golett, -hariyama, -wingull, -terrakion, -gardevoirmega, -jangmoo, -pineco, -lampent, -heliolisk, -alomomola, -herdier, -mawile, -dialga, -lucariomega, -hippopotas, -kecleon, -drilbur, -lillipup, -shuppet, -teddiursa, -unfezant, -krookodile, -drifblim, -aegislashblade, -silvallywater, -gothitelle, -klink, -garbodor, -shayminsky, -garchomp, -volcanion, -silvallyrock, -vanillish, -sewaddle, -corphish, -groudonprimal, -hooh, -reuniclus, -pancham, -primarina, -dewpider, -oricoriosensu, -mudbray, -skitty, -celesteela, -crawdaunt, -leavanny, -poipole, -piloswine, -gothita, -scatterbug, -octillery, -ralts, -vanillite, -zweilous, -audinomega, -aromatisse, -genesect, -darumaka, -mudkip, -wobbuffet, -monferno, -regice, -slakoth, -azurill, -swalot, -silvallyghost, -pyroar, -finneon, -escavalier, -dustox, -swellow, -infernape, -dedenne, -meowsticf, -sunflora, -shedinja, -volcarona, -duskull, -popplio, -remoraid, -zangoose, -trevenant, -snubbull, -cubchoo, -makuhita, -silvallydark, -hawlucha, -cranidos, -keldeoresolute, -stunky, -woobat, -klinklang, -wimpod, -castformsunny, -porygonz, -wishiwashi, -ribombee, -lycanroc, -komala, -magearna, -wishiwashischool, -altariamega, -starly, -smoochum, -silcoon, -lunala, -armaldo, -gallademega, -noivern, -bergmite, -goomy, -glaceon, -cascoon, -salamence, -drampa, -nincada, -shroomish, -kricketune, -goodra, -zorua, -sceptile, -helioptile, -ducklett, -magcargo, -arceus, -kricketot, -munna, -weavile, -hoopa, -cherrimsunshine, -naganadel, -arceusground, -pyukumuku, -mew, -rotomfrost, -mienshao, -cutiefly, -seedot, -chatot, -ferrothorn, -totodile, -torterra, -burmy, -yamask, -swanna, -mamoswine, -jellicent, -amoonguss, -quilladin, -pichuspikyeared, -slaking, -scolipede, -arceusghost, -turtwig, -gogoat, -klefki, -silvallyfairy, -krokorok, -galvantula, -torchic, -arceuspoison, -blitzle, -ninjask, -maractus, -snivy, -lickilicky, -pignite, -sliggoo, -servine, -dunsparce, -porygon2, -tapubulu, -mandibuzz, -noibat, -espurr, -aggron, -salamencemega, -cryogonal, -bonsly, -steelixmega, -minun, -phione, -blazikenmega, -mimikyutotem, -stoutland, -zebstrika, -spoink, -arceusdragon, -lucario, -ledyba, -arceusice, -torracat, -vivillon, -deoxysdefense, -anorith, -necrozmaduskmane, -silvallyflying, -blissey, -swoobat, -sealeo, -araquanid, -arceusbug, -volbeat, -bastiodon, -spinda, -crabrawler, -accelgor, -whimsicott, -sceptilemega, -poochyena, -nihilego, -gumshoostotem, -togetic, -magby, -prinplup, -walrein, -uxie, -silvallypoison, -latiosmega, -rayquaza, -riolu, -taillow, -sableyemega, -tornadus, -froakie, -mimikyu, -nosepass, -purugly, -darmanitanzen, -incineroar, -druddigon, -tapukoko, -axew, -flygon, -xatu, -spinarak, -skuntank, -malamar, -skrelp, -musharna, -grovyle, -salandit, -ribombeetotem, -gorebyss, -shuckle, -castformrainy, -arceusgrass, -steelix, -mantyke, -kyuremblack, -cosmoem, -buzzwole, -tyrogue, -togekiss, -linoone, -litwick, -rhyperior, -cameruptmega, -wormadamsandy, -gourgeist, -yanmega, -bewear, -bounsweet, -castformsnowy, -karrablast, -guzzlord, -vibrava, -chinchou, -dusknoir, -fraxure, -rotommow, -spheal, -luxio, -togedemarutotem, -morelull, -magnezone, -inkay, -gurdurr, -gourgeistlarge, -zygarde, -genesectchill, -yveltal, -budew, -toxapex, -roggenrola, -minior, -zygardecomplete, -arceussteel, -shaymin, -glaliemega, -shieldon, -clauncher, -braixen, -spritzee, -tyrunt, -tyranitarmega, -latiasmega, -staraptor, -oshawott, -rayquazamega, -kirlia, -drapion, -tyranitar, -honedge, -sigilyph, -illumise, -sandile, -bronzor, -abomasnowmega, -talonflame, -carnivine, -electrike, -pumpkaboolarge, -lugia, -magmortar, -pheromosa, -timburr, -decidueye, -cofagrigus, -bellossom, -snorunt, -umbreon, -snover, -hitmontop, -absolmega, -larvitar, -tapulele, -dianciemega, -azumarill, -mightyena, -simisear, -leafeon, -shelgon, -tepig, -oricorio";
+					tourrules = "-uber, -ou, -uubl, -uu, -rubl, -ru, -nubl, -nu, -publ, -pu, -zu, -nfe, -lc, -lc uber, +Bulbasaur, +Ivysaur, +Venusaur, +Charmander, +Charmeleon, +Charizard, +Squirtle, +Wartortle, +Blastoise, +Caterpie, +Metapod, +Butterfree, +Weedle, +Kakuna, +Beedrill, +Pidgey, +Pidgeotto, +Pidgeot, +Rattata, +Raticate, +Spearow, +Fearow, +Ekans, +Arbok, +Pikachu, +Raichu, +Sandshrew, +Sandslash, +Nidoran♀, +Nidorina, +Nidoqueen, +Nidoran♂, +Nidorino, +Nidoking, +Clefairy, +Clefable, +Vulpix, +Ninetales, +Jigglypuff, +Wigglytuff, +Zubat, +Golbat, +Oddish, +Gloom, +Vileplume, +Paras, +Parasect, +Venonat, +Venomoth, +Diglett, +Dugtrio, +Meowth, +Persian, +Psyduck, +Golduck, +Mankey, +Primeape, +Growlithe, +Arcanine, +Poliwag, +Poliwhirl, +Poliwrath, +Abra, +Kadabra, +Alakazam, +Machop, +Machoke, +Machamp, +Bellsprout, +Weepinbell, +Victreebel, +Tentacool, +Tentacruel, +Geodude, +Graveler, +Golem, +Ponyta, +Rapidash, +Slowpoke, +Slowbro, +Magnemite, +Magneton, +Farfetch’d, +Doduo, +Dodrio, +Seel, +Dewgong, +Grimer, +Muk, +Shellder, +Cloyster, +Gastly, +Haunter, +Gengar, +Onix, +Drowzee, +Hypno, +Krabby, +Kingler, +Voltorb, +Electrode, +Exeggcute, +Exeggutor, +Cubone, +Marowak, +Hitmonlee, +Hitmonchan, +Lickitung, +Koffing, +Weezing, +Rhyhorn, +Rhydon, +Chansey, +Tangela, +Kangaskhan, +Horsea, +Seadra, +Goldeen, +Seaking, +Staryu, +Starmie, +Mr. Mime, +Scyther, +Jynx, +Electabuzz, +Magmar, +Pinsir, +Tauros, +Magikarp, +Gyarados, +Lapras, +Ditto, +Eevee, +Vaporeon, +Jolteon, +Flareon, +Porygon, +Omanyte, +Omastar, +Kabuto, +Kabutops, +Aerodactyl, +Snorlax, +Articuno, +Zapdos, +Moltres, +Dratini, +Dragonair, +Dragonite";
 					tournote = "Teams for this tournament can only use Pokemon from the Kanto region (dex numbers #1-149). Alolan versions, Megas, and Z-crystals are allowed.";
 					break;
 				case "gio":
@@ -584,7 +584,7 @@ exports.commands =
 		let arglist = arg.split(',');
 
 		//Gives myself and the bot insult immunity. Prevents sneaky UTF-8 similar looking characters intended to avoid the insult.
-		if (toID(arglist[0]).includes("dawoblefet") || toID(arglist[0]).includes(toID(config.nick)) || /[^\u0000-\u007F]/g.test(arglist[0]))
+		if (toID(arglist[0]).includes("dawob") || toID(arglist[0]).includes(toID(config.nick)) || /[^\u0000-\u007F]/g.test(arglist[0]))
 		{
 			arglist[0] = by.substring(1, by.length);
 		}
@@ -691,7 +691,7 @@ exports.commands =
 			"Why is justice best served cold? Because if it was served warm, it would be just water!",
 			"Last week, I decided I was going to enter the Worlds Tightest Hat competition. I just hope I can pull it off...",
 			"What do you call a beehive where bees can never leave? Un-bee-leaveable!"
-			];
+		];
 
 		let jokeNum = parseInt(arg);
 		if (!arg)
@@ -792,7 +792,12 @@ exports.commands =
 	{
 		this.say(room, "/uno create 10");
 		this.say(room, "/uno autostart 30");
-		this.say(room, "/uno timer 10");
+		let timer = 10;
+		if (by === "dingram")
+		{
+			timer = 5;
+		}
+		this.say(room, "/uno timer " + timer);
 	},
 
 	objective: "objectively",
@@ -867,7 +872,11 @@ exports.commands =
 	b: function(arg, by, room)
 	{
 		let text = "\ud83c\udd71\ufe0f";
-		this.say(room, "/addhtmlbox " + text);
+		if (room.charAt(0) != ",")
+		{
+			text = "/addhtmlbox " + text;
+		}
+		this.say(room, text);
 	},
 	dynamax: async function(arg, by, room)
 	{
