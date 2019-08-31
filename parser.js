@@ -604,8 +604,8 @@ exports.parse =
 			}
 
 			//Autocorrect regexes and corresponding autocorrections
-			let autocorrectRegexes = [/(n|N)inetails/, /(m|M)eowstick/, /(c|C)owmoo/, /tylee/, /(w|W)olfie/, /(A|a)moongus([^s]|$)/, /(d|d)a(w|W)obblefet/];
-			let autocorrectMessages = ["Ninetales", "Meowstic", "Kommo-o", "tlyee", "Wolfey", "Amoonguss", "DaWoblefet"];
+			let autocorrectRegexes = [/(n|N)inetails/, /(m|M)eowstick/, /(c|C)owmoo/, /tylee/, /(w|W)olfie/, /(A|a)moongus([^s]|$)/, /(s|S)hedninja, /(d|d)a(w|W)obblefet/];
+			let autocorrectMessages = ["Ninetales", "Meowstic", "Kommo-o", "tlyee", "Wolfey", "Amoonguss", "Shedinja", "DaWoblefet"];
 
 			for (let i = 0; i < autocorrectRegexes.length; i++)
 			{
@@ -616,7 +616,7 @@ exports.parse =
 				}
 			}
 
-			/* Room policy changed to not autocrrect on Pdon:
+			/* Room policy changed to not autocorrect on Pdon:
 			/(p|P)(d|D)(o|O)(n|N)([^(z|Z)]|$)/ (for Pdon -> Primal Groudon; needed to account for Pd0nZ's name)
 			Came with this PM bc of its controversial nature: Please do not use the abbreviation \"pdon\" for Primal Groudon. Say it out loud and you'll realize why. You can just say Groudon or don, and everyone will know what Pokemon you're talking about.
 			*/
