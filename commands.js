@@ -240,16 +240,16 @@ exports.commands =
 			{
 				case "": //No argument specified, use default tour.
 					arglist[0] = defaultTour;
-					if (Math.random() < 0.5)
+					/*if (Math.random() < 0.5)
 					{
 						tourrules = "-guard split, -minimize";
-					}
+					}*/
 					break;
 				case "double":
 				case "double elim":
 				case "double elimination":
 					arglist[0] = defaultTour;
-					tourrules = "-guard split, -minimize";
+					//tourrules = "-guard split, -minimize";
 					arglist[1] = "elimination";
 					arglist[2] = "128";
 					arglist[3] = "2";
@@ -273,7 +273,13 @@ exports.commands =
 					formatname = "VGC 2019 Ultra Series";
 					formatDescription = "Ultra Series allows up to two restricted Pokemon, in addition to Mega Evolution, Primal Orbs, and Z-crystals, unlike previous series in VGC 2019.";
 					sampleTeams = [
-						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "Ultra Series Sample Teams"]
+						["groudonprimal", "lunala", "salamencemega", "incineroar", "tapufini", "stakataka", "https://pokepast.es/6ca7e058260024d2", "Penguin2142's 1st Place Worlds Team"],
+						["kyogreprimal", "rayquazamega", "gengarmega", "incineroar", "celesteela", "tapukoko", "https://pokepast.es/3c95421eaa24efe4", "Wolfe Glick's 1st Place US Internationals Team"],
+						["xerneas", "kyogreprimal", "kartana", "tornadus", "amoonguss", "incineroar", "https://pokepast.es/fe935379b10de53a", "Jamesspeed1's Top 4 Worlds Team"],
+						["xerneas", "rayquazamega", "nihilego", "incineroar", "tapufini", "amoonguss", "https://pokepast.es/2e2c22371e2cdcdd", "Pado's 1st Place Europe Internationals Team"],
+						["xerneas", "groudonprimal", "kangaskhanmega", "mawilemega", "tornadus", "kommoo", "https://pokepast.es/245146eaaf615889", "Animus's Top 8 US Internationals Team"],
+						["xerneas", "necrozmaultra", "salamence", "salazzle", "tapukoko", "breloom", "https://pokepast.es/c28982cdb66faa17", "MrJellyLegs's Top 16 Worlds Team"],
+						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "More Ultra Series Samples"]
 					];
 					break;
 				case "moon":
@@ -749,8 +755,8 @@ exports.commands =
 		let text;
 		let vgcstats = "https://vgcstats.com";
 		let bsUsage = "https://3ds.pokemon-gl.com/battle/usum/#wcs";
-		let psUsage = "https://www.smogon.com/stats/2019-07/gen7vgc2019ultraseries-1760.txt";
-		let psDetailedUsage = "https://www.smogon.com/stats/2019-07/moveset/gen7vgc2019ultraseries-1760.txt";
+		let psUsage = "https://www.smogon.com/stats/2019-08/gen7vgc2019ultraseries-1760.txt";
+		let psDetailedUsage = "https://www.smogon.com/stats/2019-08/moveset/gen7vgc2019ultraseries-1760.txt";
 
 		if (by.charAt(0) === ' ' || room.charAt(0) === ",")
 		{
