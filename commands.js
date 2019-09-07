@@ -278,7 +278,7 @@ exports.commands =
 						["xerneas", "kyogreprimal", "kartana", "tornadus", "amoonguss", "incineroar", "https://pokepast.es/fe935379b10de53a", "Jamesspeed1's Top 4 Worlds Team"],
 						["xerneas", "rayquazamega", "nihilego", "incineroar", "tapufini", "amoonguss", "https://pokepast.es/2e2c22371e2cdcdd", "Pado's 1st Place Europe Internationals Team"],
 						["xerneas", "groudonprimal", "kangaskhanmega", "mawilemega", "tornadus", "kommoo", "https://pokepast.es/245146eaaf615889", "Animus's Top 8 US Internationals Team"],
-						["xerneas", "necrozmaultra", "salamence", "salazzle", "tapukoko", "breloom", "https://pokepast.es/c28982cdb66faa17", "MrJellyLegs's Top 16 Worlds Team"],
+						["xerneas", "necrozmaultra", "salamencemega", "salazzle", "tapukoko", "breloom", "https://pokepast.es/c28982cdb66faa17", "MrJellyLegs's Top 16 Worlds Team"],
 						["rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "rhydon", "https://trainertower.com/vgc19-ultra-series-sample-teams/", "More Ultra Series Samples"]
 					];
 					break;
@@ -615,7 +615,7 @@ exports.commands =
 		let arglist = arg.split(',');
 
 		//Gives myself and the bot insult immunity. Prevents sneaky UTF-8 similar looking characters intended to avoid the insult.
-		if (toID(arglist[0]).includes("dawob") || toID(arglist[0]).includes(toID(config.nick)) || /[^\u0000-\u007F]/g.test(arglist[0]))
+		if (toID(arglist[0]).includes("dawob") || toID(arglist[0]).includes("trey") || toID(arglist[0]).includes("leonard") || toID(arglist[0]).includes(toID(config.nick)) || /[^\u0000-\u007F]/g.test(arglist[0]))
 		{
 			arglist[0] = by.substring(1, by.length);
 		}
