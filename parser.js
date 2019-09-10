@@ -96,19 +96,6 @@ exports.parse =
 					return ok("joined " + spl[2].substr(7));
 				}
 			}
-			//Edge case for tour end
-			try
-			{
-				if (spl[2].substr(1, 10) === "tournament")
-				{
-					return this.message(spl[2], room);
-				}
-			}
-			catch (e) {}
-			if (spl[1].substr(1, 10) === "tournament")
-			{
-				return this.message(spl[1], room);
-			}
 			room = spl.shift().substr(1);
 		}
 
@@ -293,11 +280,7 @@ exports.parse =
 			case 'l': case 'L': //User leaving the room
 				break;
 			case "tournament":
-				if (spl[2] === "update")
-				{
-					hasTourStarted = true;
-				}
-				if (spl[2] === "create")
+				if (spl[2] === "update" || spl[2] === "create")
 				{
 					hasTourStarted = true;
 				}
