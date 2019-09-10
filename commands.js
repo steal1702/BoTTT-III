@@ -34,7 +34,7 @@ exports.commands =
 		}
 		else
 		{
-			text = "There is no guide for this bot. PM the owner with any questions.";
+			text = "There is no guide for this bot. PM the owner, " + config.owners[0] + " , with any questions.";
 		}
 		if (by.charAt(0) === " ")
 		{
@@ -52,7 +52,7 @@ exports.commands =
 		}
 		else
 		{
-			text = "There is no public source code for " + config.nick + ".";
+			text = "There is no public source code for " + config.nick + ". However, the repository for the bot it is based on, BoTTT III, can be found here: https://github.com/DaWoblefet/BoTTT-III.";
 		}
 		if (by.charAt(0) === " ")
 		{

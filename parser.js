@@ -523,10 +523,14 @@ exports.parse =
 				break;
 		}
 
-		//Owner has access to every command.
-		if (userID === toID(config.owner))
+		//Owners have access to every command.
+		for (i = 0; i < config.owners.length; i++)
 		{
-			canUse = true;
+			if (userID === toID(config.owners[i]))
+			{
+				canUse = true;
+				break;
+			}
 		}
 
 		return canUse;

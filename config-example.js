@@ -17,11 +17,10 @@ exports.pass = "";
 exports.avatar = "";
 exports.status = "";
 
-/* The owner of the bot. This is set up to only have one owner, and
- * the account here has access to all commands defined in commands.js,
- * in addition to being the only one who can access most admin commands.  */
-
- exports.owner = "";
+/* The owner(s) of the bot. Owners should be in quotes, separated by commas.
+ * An owner of this bot has access to all commands defined in commands.js,
+ * in addition to being the only ones who can access admin commands.  */
+exports.owners = [""];
 
 /* Rooms that should be joined in quotes, separated by commas. Showdown
  * policy is not to join lobby, so please don't do that. */
