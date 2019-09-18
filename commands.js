@@ -721,7 +721,8 @@ exports.commands =
 			"Did you hear people aren't naming their daughters Karen nowadays? Soon there won't be a Karen the world.",
 			"Why is justice best served cold? Because if it was served warm, it would be just water!",
 			"Last week, I decided I was going to enter the Worlds Tightest Hat competition. I just hope I can pull it off...",
-			"What do you call a beehive where bees can never leave? Un-bee-leaveable!"
+			"What do you call a beehive where bees can never leave? Un-bee-leaveable!",
+			"How much does it cost for a pirate to get their ears pierced? A buccaneer!"
 		];
 
 		let jokeNum = parseInt(arg);
