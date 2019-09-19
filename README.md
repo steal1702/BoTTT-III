@@ -4,7 +4,7 @@ Pokemon Showdown bot forked from BoTTT-III.
 Installation
 ------------
 
-BoTTT III requires [node.js](http://nodejs.org/) to run. It has the same version requirements as [Pokemon Showdown itself](https://github.com/Zarel/Pokemon-Showdown). I recommend installing the most recent stable version.
+Fiend Bot requires [node.js](http://nodejs.org/) to run. It has the same version requirements as [Pokemon Showdown itself](https://github.com/Zarel/Pokemon-Showdown).
 
 Next up is cloning this bot. This can be done in two ways: cloning it via `git` or downloading as ZIP.
 
@@ -24,14 +24,16 @@ Development
 -----------
 
 Credits:
- - DaWoblefet (Development for the VGC room)
+ - Enrii (Owner, Custom Commands)
+ - DaWoblefet (Development for BoTTT)
  - Morfent (Development of original BoTTT)
  - TalkTakesTime (Development of original BoTTT)
  - Quinella (Development of original BoTTT)
  
 Commands
 -----------
-A quick summary of commands can be found [here](https://pastebin.com/5GLxEt4P). In addition, here are the high-restriction / dev commands:
+
+Dev Commands - 
 
 `reload` or `rl`- Updates the commands.js and parser.js files without needing to shut down and restart the bot. If you made a syntax error, you will be informed on the console and will not be able to reload until you have resolved it.
 
@@ -39,4 +41,4 @@ A quick summary of commands can be found [here](https://pastebin.com/5GLxEt4P). 
 
 `js` - Execute arbitrary Javascript.
 
-`kill` - Kill the process BoTTT III is running on. Equivalent to Ctrl+C in console.
+`kill` - Kill the process Fiend Bot is running on. Equivalent to Ctrl+C in console.
