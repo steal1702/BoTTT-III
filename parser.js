@@ -436,7 +436,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic", "tc", "uptime"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
