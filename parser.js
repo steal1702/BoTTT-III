@@ -428,7 +428,7 @@ exports.parse =
 
 		if (userRank >= NONE)
 		{
-			if(["commands", "git", "usage"].indexOf(cmd) >= 0)
+			if(["commands", "git", "usage", "about"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
