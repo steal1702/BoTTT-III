@@ -32,7 +32,7 @@ exports.commands =
 	// Shade League Exclusive commands
 	tc: function(arg, by, room) {
 		this.say(room, "Sorry but the command is currently disabled and under development");
-	}
+	},
 
 	//Links to a more detailed pastebin for the user to read about the bot's commands.
 	guide: "commands",
