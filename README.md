@@ -1,5 +1,5 @@
-# BoTTT-III
-Pokemon Showdown chatroom bot specialized for the [VGC room](https://play.pokemonshowdown.com/vgc).
+# Fiend Bot
+Pokemon Showdown bot forked from BoTTT-III.
 
 Installation
 ------------
