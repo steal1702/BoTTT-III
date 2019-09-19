@@ -20,9 +20,16 @@ if (config.serverid === "showdown")
 exports.commands =
 {
 	//Information/Help Commands
+	about: function(arg, by, room) {
+		let text = "**" + config.nick + "** by __Enrii__ forked from BoTTT-III by __DaWoblefet__"; 
+		if(by.charAt(0) == " ") {
+			this.say(room, "/pm " + by + ", " + text);
+		} else {
+			this.say(room, text);
+		}
+	},
 
 	//Links to a more detailed pastebin for the user to read about the bot's commands.
-	about: "commands",
 	guide: "commands",
 	help: "commands",
 	commands: function(arg, by, room)
