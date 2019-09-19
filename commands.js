@@ -29,6 +29,11 @@ exports.commands =
 		}
 	},
 
+	uptime: function(arg, by, room) {
+		let startTime = Date.now() - (process.uptime() * 1000);
+		this.say(room, "**Bot Uptime**: " + this.getTimeAgo(startTime));
+	},
+
 	// Shade League Exclusive commands
 	tc: function(arg, by, room) {
 		this.say(room, "Sorry but the command is currently disabled and under development");

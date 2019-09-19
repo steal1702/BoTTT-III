@@ -732,6 +732,35 @@ exports.parse =
 
 		return result;
 	},
+
+	getTimeAgo: function(time) {
+        time = ~~((Date.now() - time) / 1000);
+
+        let seconds = time % 60;
+        let times = [];
+        if (seconds) times.push(seconds + (seconds === 1 ? ' second' : ' seconds'));
+        if (time >= 60) {
+            time = ~~((time - seconds) / 60);
+            let minutes = time % 60;
+            if (minutes) times.unshift(minutes + (minutes === 1 ? ' minute' : ' minutes'));
+            if (time >= 60) {
+                time = ~~((time - minutes) / 60);
+                let hours = time % 24;
+                if (hours) times.unshift(hours + (hours === 1 ? ' hour' : ' hours'));
+                if (time >= 24) {
+                    time = ~~((time - hours) / 24);
+                    let days = time % 365;
+                    if (days) times.unshift(days + (days === 1 ? ' day' : ' days'));
+                    if (time >= 365) {
+                        let years = ~~((time - days) / 365);
+                        if (days) times.unshift(years + (years === 1 ? ' year' : ' years'));
+                    }
+                }
+            }
+        }
+        if (!times.length) return '0 seconds';
+        return times.join(', ');
+    },
 	/*displayNPAbox: function()
 	{
 		let htmlText = "<center> <img src=\"https:\/\/i.imgur.com\/YzEVGvU.png\" width=\"30\" height=\"30\"> &nbsp;&nbsp; <span style=\"font-weight: bold; font-size: 20px; text-decoration: underline\">";
