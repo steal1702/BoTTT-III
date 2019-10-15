@@ -35,34 +35,34 @@ exports.commands =
 	},
 
 	// Shade League Exclusive commands
-	tc: function(arg, by, room) {
-		arg = arg.toLowerCase();
+	// tc: function(arg, by, room) {
+	// 	arg = arg.toLowerCase();
 
-		if(this.hasRank(by, "~#&*@%$+") && !arg) {
-			arg = by.substr(1).toLowerCase();
-		} else if(!arg) {
-			arg = by.toLowerCase;
-		}
+	// 	if(this.hasRank(by, "~#&*@%$+") && !arg) {
+	// 		arg = by.substr(1).toLowerCase();
+	// 	} else if(!arg) {
+	// 		arg = by.toLowerCase;
+	// 	}
 
-		switch(arg) {
-			case "enrii":
-			case "shadesofsteel":
-				this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shades of Steel</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/charizard.gif" style='float: left;' height="100" width="100"></div>&nbsp;&nbsp;Frontier Brain<br>&nbsp;&nbsp;Tower Name: Battle Mansion<br>&nbsp;&nbsp;Ace Pokemon: Charizard`);
-				break;
+	// 	switch(arg) {
+	// 		case "enrii":
+	// 		case "shadesofsteel":
+	// 			this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shades of Steel</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/charizard.gif" style='float: left;' height="100" width="100"></div>&nbsp;&nbsp;Frontier Brain<br>&nbsp;&nbsp;Tower Name: Battle Mansion<br>&nbsp;&nbsp;Ace Pokemon: Charizard`);
+	// 			break;
 
-			case "shade churup":
-				this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shade Churup</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/garchomp.gif" style='float: left;' height="100" width="100"></div>&nbsp;&nbsp;OU Frontier (Battle Subway)<br>&nbsp;&nbsp;Quote: My Dragons will be your demise<br>&nbsp;&nbsp;Ace Pokemon: Garchomp`);
-				break;
+	// 		case "shade churup":
+	// 			this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shade Churup</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/garchomp.gif" style='float: left;' height="100" width="100"></div>&nbsp;&nbsp;OU Frontier (Battle Subway)<br>&nbsp;&nbsp;Quote: My Dragons will be your demise<br>&nbsp;&nbsp;Ace Pokemon: Garchomp`);
+	// 			break;
 
-			case "htaras":
-			case "shade steaky":
-				this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shade Steaky</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/politoed.gif" style='float: left;' height="100" width="75"></div>&nbsp;&nbsp;Frontier Brain<br>&nbsp;&nbsp;Tower Name: Battle Arcade<br>&nbsp;&nbsp;Quote: With drizzle comes the rain and also the freezing wind<br>&nbsp;&nbsp;Ace Pokemon: Politoed`);
-				break;
+	// 		case "htaras":
+	// 		case "shade steaky":
+	// 			this.say(room, `/addhtmlbox <div style='overflow: auto;'><h2 style='float: left; width: 80%;'>Shade Steaky</h2> <img src="https://play.pokemonshowdown.com/sprites/xyani/politoed.gif" style='float: left;' height="100" width="75"></div>&nbsp;&nbsp;Frontier Brain<br>&nbsp;&nbsp;Tower Name: Battle Arcade<br>&nbsp;&nbsp;Quote: With drizzle comes the rain and also the freezing wind<br>&nbsp;&nbsp;Ace Pokemon: Politoed`);
+	// 			break;
 
-			default:
-				this.say(room, "No Trainer card available for " +arg);
-		}
-	},
+	// 		default:
+	// 			this.say(room, "No Trainer card available for " +arg);
+	// 	}
+	// },
 
 	//Links to a more detailed pastebin for the user to read about the bot's commands.
 	guide: "commands",
