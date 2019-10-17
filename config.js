@@ -24,13 +24,13 @@ exports.owners = ["enrii"];
 
 /* Rooms that should be joined in quotes, separated by commas. Showdown
  * policy is not to join lobby, so please don't do that. */
-exports.rooms = [""];
+exports.rooms = ["lobby"];
 
 /* Any private rooms that should be joined in quotes, separated by commas.
  * The only difference in private rooms are moderation type (you can't warn).
  * Groupchats are included as private rooms. If the room fails to exist, the
  * bot will just ignore it and move on.   */
-exports.privaterooms = ["botzone"];
+exports.privaterooms = ["lab"];
 
 /* The character to use to execute commands from commands.js. The command
  * character must be made of more than just alphanumeric characters and
