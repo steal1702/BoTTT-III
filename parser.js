@@ -280,9 +280,16 @@ exports.parse =
 			case 'l': case 'L': //User leaving the room
 				break;
 			case "tournament":
-				if (spl[2] === "update" || spl[2] === "create")
+				if (spl[2] === "create")
 				{
-					hasTourStarted = true;
+					// hasTourStarted = true;
+					if(spl[3] === "gen7challengecup1v1") {
+						this.say(room, "/wall **Challenge Cup 1v1**. Randomly generated teams with randomly generated sets. Good Luck have fun!");
+					}
+
+					else if(spl[3] === "gen7spectralsuperstaffbros") {
+						this.say(room, "/wall **Spectral Super Staff Bros**. The Staff on Spectral all fight it out in a battle of Super Staff Bros! Randomized Teams. **__Ruleset__**: Sleep Clause Mod, Cancel Mod, HP Percentage Mod, Team Preview");
+					}
 				}
 				if (spl[2] === "end" || spl[2] === "forceend")
 				{
@@ -436,7 +443,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic", "tc", "uptime"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic", "tc", "uptime", "start"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}
