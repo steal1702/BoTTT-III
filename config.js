@@ -1,13 +1,13 @@
 /* Websocket server and port the bot should connect to. Check the 'Request URL'
  * of the websocket. If you don't know what that means, just leave this as-is. */
-exports.server = "oppai.azure.lol";
-exports.port = 80;
+exports.server = "51.79.49.236";
+exports.port = 8000;
 
 /* The server ID. This should almost certainly be "showdown", but just in case,
  * check where the AJAX call "goes to" when you log in. For example, on the PS server,
  * it will say ~~showdown somewhere in the URL, indicating the server ID is "showdown"
  * If you don't know what that means, just leave this as-is.   */
-exports.serverid = "azure";
+exports.serverid = "spectral";
 
 /* The name of the bot and password. I recommend setting up the account prior to
  * launching node main.js for the first time. Use a strong password if you
@@ -30,7 +30,7 @@ exports.rooms = [""];
  * The only difference in private rooms are moderation type (you can't warn).
  * Groupchats are included as private rooms. If the room fails to exist, the
  * bot will just ignore it and move on.   */
-exports.privaterooms = ["masteryuniversity"];
+exports.privaterooms = ["botzone"];
 
 /* The character to use to execute commands from commands.js. The command
  * character must be made of more than just alphanumeric characters and
