@@ -81,7 +81,7 @@ exports.git = "";
  * -Stretching is considered to be using the same character 8 times in a row, or some
  * group of characters 5 times in a row.
  * - Punishments are accelerated if a user continues to activate the bot's warnings/mutes.   */
-exports.allowmute = true;
+exports.allowmute = false;
 
 /* You can customize what punishments are appropriate after repeated offenses here.*/
 exports.punishvals =
