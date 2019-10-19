@@ -216,7 +216,16 @@ exports.commands =
 
 			case "help":
 			case "h":
-				this.say(room, "/addhtmlbox <h3>Bot supported Tour Tiers</h3><ul><li>.tour cc1v1</li><li>.tour metronomecc1v1 (.tour mcc1v1)</li><li>.tour monotyperandom (.tour monorandom/ .tour monorand)</li><li>.tour sssb</li><li>.tour ssbffa</li><li>.tour randombattle (.tour randbat)</li><li>.tour ou</li><li>.tour monotype (.tour mono)</li><li>.tour pu</li><li>.tour uu</li><li>.tour ru</li><li>.tour nu</li></ul>");
+				this.say(room, "/addhtmlbox <h3>Bot supported Tour Tiers</h3><ul><li>.tour cc1v1</li><li>.tour metronomecc1v1 (.tour mcc1v1)</li><li>.tour monotyperandom (.tour monorandom/ .tour monorand)</li><li>.tour sssb</li><li>.tour ssbffa</li><li>.tour randombattle (.tour randbat)</li><li>.tour ou</li><li>.tour monotype (.tour mono)</li><li>.tour pu</li><li>.tour uu</li><li>.tour ru</li><li>.tour nu</li><li>.tour battlefactory (.tour bf)</li><li>.tour end - Ends an ongoing tournament</li><li>.start [time in minutes] - Sets an Auto start timer for the ongoing tournament</li></ul>");
+				break;
+
+			case "battlefactory":
+			case "bf":
+				this.say(room, "/tour new battlefactory, elimination");
+				this.say(room, "/tour autodq 2");
+				if(arglist[1]) {
+					this.say(room, "/tour cap " + arglist[1]);
+				}
 				break;
 
 			case "end":
@@ -235,7 +244,7 @@ exports.commands =
 			return;
 		}
 
-		this.say(room, "The tournament will automatically start in " + arg + " minute(s)");
+	//	this.say(room, "The tournament will automatically start in " + arg + " minute(s)");
 		this.say(room, "/tour autostart " + arg);
 	},
 
