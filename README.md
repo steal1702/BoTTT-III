@@ -1,5 +1,5 @@
 # Fiend Bot
-Pokemon Showdown bot forked from BoTTT-III.
+Pokemon Showdown bot forked from BoTTT-III
 
 Installation
 ------------
