@@ -290,7 +290,23 @@ exports.parse =
 					else if(spl[3] === "gen7spectralsuperstaffbros") {
 						this.say(room, "/wall **Spectral Super Staff Bros**. The Staff on Spectral all fight it out in a battle of Super Staff Bros! Randomized Teams. **__Ruleset__**: Sleep Clause Mod, Cancel Mod, HP Percentage Mod, Team Preview");
 					}
+					
+					else if(spl[3] === "gen7monotype") {
+						this.say(room, "/wall **[Gen 7] Monotype**. All the Pokémon on a team must share a type. **__Sample Teams__**: https://www.smogon.com/forums/threads/monotype-sample-teams.3599682/");
+					}
+					
+					else if(spl[3] === "gen7randombattle") {
+						this.say(room, "/wall **[Gen 7] Random Battle**. Randomized teams of level-balanced Pokémon with sets that are generated to be competitively viable.");
+					}
+					
+					else if(spl[3] === "gen7monotyperandombattle") {
+						this.say(room, "/wall **[Gen 7] Monotype Random Battle**. Randomized teams of level-balanced Pokémon sharing a common type.");
+					}
 				}
+				if(spl[2] === "start") {
+					this.say(room, "/wall Good luck to all players");
+				}
+				
 				if (spl[2] === "end" || spl[2] === "forceend")
 				{
 					hasTourStarted = false;
