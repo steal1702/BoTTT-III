@@ -112,8 +112,14 @@ exports.commands =
 			return;
 		}
 
+		if(roomTour && arglist[0] !== "end") {
+			this.say(room, "There is already a tournament in progress. Please wait for the current one to end before starting a new one");
+			return;
+		}
+
 		switch(arglist[0]) {
 			case "cc1v1":
+				roomTour = true;
 				this.say(room, "/tour new cc1v1,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -123,6 +129,7 @@ exports.commands =
 
 			case "metronomecc1v1":
 			case "mcc1v1":
+				roomTour = true;
 				this.say(room, "/tour new metronomecc1v1,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -133,6 +140,7 @@ exports.commands =
 			case "monotyperandom":
 			case "monorandom":
 			case "monorand":
+				roomTour = true;
 				this.say(room, "/tour new monotyperandombattle,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -141,6 +149,7 @@ exports.commands =
 				break;
 
 			case "sssb":
+				roomTour = true;
 				this.say(room, "/tour new sssb,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -149,6 +158,7 @@ exports.commands =
 				break;
 
 			case "ssbffa":
+				roomTour = true;
 				this.say(room, "/tour new ssbffa,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -158,6 +168,7 @@ exports.commands =
 
 			case "randombattle":
 			case "randbat":
+				roomTour = true;
 				this.say(room, "/tour new randombattle,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -166,6 +177,7 @@ exports.commands =
 				break;
 
 			case "ou":
+				roomTour = true;
 				this.say(room, "/tour new ou,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -175,6 +187,7 @@ exports.commands =
 
 			case "monotype":
 			case "mono":
+				roomTour = true;
 				this.say(room, "/tour new monotype,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -183,6 +196,7 @@ exports.commands =
 				break;
 
 			case "uu":
+				roomTour = true;
 				this.say(room, "/tour new uu,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -191,6 +205,7 @@ exports.commands =
 				break;
 
 			case "ru":
+				roomTour = true;
 				this.say(room, "/tour new ru,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -199,6 +214,7 @@ exports.commands =
 				break;
 
 			case "nu":
+				roomTour = true;
 				this.say(room, "/tour new nu,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -207,6 +223,7 @@ exports.commands =
 				break;
 
 			case "pu":
+				roomTour = true;
 				this.say(room, "/tour new pu,elimination");
 				this.say(room, "/tour autodq 2");
 				if(arglist[1]) {
@@ -216,16 +233,8 @@ exports.commands =
 
 			case "help":
 			case "h":
-				this.say(room, "/addhtmlbox <h3>Bot supported Tour Tiers</h3><ul><li>.tour cc1v1</li><li>.tour metronomecc1v1 (.tour mcc1v1)</li><li>.tour monotyperandom (.tour monorandom/ .tour monorand)</li><li>.tour sssb</li><li>.tour ssbffa</li><li>.tour randombattle (.tour randbat)</li><li>.tour ou</li><li>.tour monotype (.tour mono)</li><li>.tour pu</li><li>.tour uu</li><li>.tour ru</li><li>.tour nu</li><li>.tour battlefactory (.tour bf)</li><li>.tour end - Ends an ongoing tournament</li><li>.start [time in minutes] - Sets an Auto start timer for the ongoing tournament</li></ul>");
-				break;
-
-			case "battlefactory":
-			case "bf":
-				this.say(room, "/tour new battlefactory, elimination");
-				this.say(room, "/tour autodq 2");
-				if(arglist[1]) {
-					this.say(room, "/tour cap " + arglist[1]);
-				}
+				roomTour = true;
+				this.say(room, "/addhtmlbox <h3>Bot supported Tour Tiers</h3><ul><li>.tour cc1v1</li><li>.tour metronomecc1v1 (.tour mcc1v1)</li><li>.tour monotyperandom (.tour monorandom/ .tour monorand)</li><li>.tour sssb</li><li>.tour ssbffa</li><li>.tour randombattle (.tour randbat)</li><li>.tour ou</li><li>.tour monotype (.tour mono)</li><li>.tour pu</li><li>.tour uu</li><li>.tour ru</li><li>.tour nu</li></ul>");
 				break;
 
 			case "end":
@@ -234,6 +243,47 @@ exports.commands =
 
 			default:
 				this.say(room, "Not a valid tournament format. **Valid Tournament Tiers**: ``.tour help``");
+		}
+	},
+
+	nexttour: "nt",
+	nt: function(arg, by, room) {
+		let text = "";
+		if(global.randomTier.length <= 0) {
+			// tier array is empty
+			text += "The next tournament is undecided at the moment";
+		} else {
+			// have an element
+			let selectedTier = global.randomTier[0];
+			text += "The next tournament will be **" + selectedTier + "**";
+		}
+		if(this.hasRank(by, '')) {
+			this.say(room, "/pm " + by + ", " + text);
+			return;
+		} else {
+			this.say(room, text);
+		}
+	},
+
+	ats: "atswitch",
+	atswitch: function(arg, by, room) {
+		if(!arg) {
+			this.say(room, "**ERROR**: Auto Tournament switch requires a parameter. **Command Usage**: ``.ats [on/off]``");
+			return;
+		}
+
+		if(global.tourSwitch === "on" && arg === "on") {
+			this.say(room, "Auto Tournament switch is already set to ON. Sit back and relax");
+		} else if(global.tourSwitch === "on" && arg === "off") {
+			this.say(room, "Auto Tournament switch has now been set to OFF. Please make tours manually");
+			global.tourSwitch = "off";
+		} else if(global.tourSwitch === "off" && arg === "on") {
+			this.say(room, "Auto Tournament switch has now been set to ON. Sit back and relax");
+			global.tourSwitch = "on";
+		} else if(global.tourSwitch === "off" && arg === "off") {
+			this.say(room, "Auto Tournament switch is already off. Please make tours manually");
+		} else {
+			this.say(room, "Something went wrong");
 		}
 	},
 

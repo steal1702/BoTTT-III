@@ -37,6 +37,10 @@ for (let i = 0, len = ranks.length; i < len; i++)
 	rankMap.set(ranks.charAt(i), i);
 }
 
+let poolOfTiers = ["Challenge Cup 1v1", "Metronome Challenge Cup 1v1", "Battle Factory", "Random Battle", "Monotype Random Battle", "Monotype"];
+// let randomTier = [];
+let nextTourTimer = 5000;
+
 exports.parse =
 {
 	actionUrl: url.parse("https://play.pokemonshowdown.com/~~" + config.serverid + "/action.php"),
@@ -281,9 +285,12 @@ exports.parse =
 			case 'l': case 'L': //User leaving the room
 				break;
 			case "tournament":
-				if (spl[2] === "create")
-				{
-					// hasTourStarted = true;
+				if(spl[2] == "create") {
+					// do nothing for now
+					if(global.roomTour === false) {
+						global.roomTour = true;
+					}
+
 					if(spl[3] === "gen7challengecup1v1") {
 						this.say(room, "/wall **Challenge Cup 1v1**. Randomly generated teams with randomly generated sets. Good Luck have fun!");
 					}
@@ -291,26 +298,58 @@ exports.parse =
 					else if(spl[3] === "gen7spectralsuperstaffbros") {
 						this.say(room, "/wall **Spectral Super Staff Bros**. The Staff on Spectral all fight it out in a battle of Super Staff Bros! Randomized Teams. **__Ruleset__**: Sleep Clause Mod, Cancel Mod, HP Percentage Mod, Team Preview");
 					}
-					
-					else if(spl[3] === "gen7monotype") {
-						this.say(room, "/wall **[Gen 7] Monotype**. All the Pokémon on a team must share a type. **__Sample Teams__**: https://www.smogon.com/forums/threads/monotype-sample-teams.3599682/");
+
+					else if(spl[3] === "gen7superstaffbrosfreeforall") {
+						this.say(room, "/wall **Super Staff Bros Free for all**. Duke it out with other users custom made pokemon. Randomized Teams. **__Ruleset__**: Obtainable, Sleep Clause Mod, Freeze Clause Mod, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
 					}
-					
-					else if(spl[3] === "gen7randombattle") {
-						this.say(room, "/wall **[Gen 7] Random Battle**. Randomized teams of level-balanced Pokémon with sets that are generated to be competitively viable.");
+
+					else if(spl[3] === "gen7metronomechallengecup1v1") {
+						this.say(room, "/wall **Metronome Challenge Cup 1v1**. Randomized Teams with all pokemon knowing only __Metronome__. **__Ruleset__**: Obtainable, HP Percentage Mod, Cancel Mod, Team Preview");
 					}
-					
-					else if(spl[3] === "gen7monotyperandombattle") {
-						this.say(room, "/wall **[Gen 7] Monotype Random Battle**. Randomized teams of level-balanced Pokémon sharing a common type.");
+
+					else if(spl[3] === "gen7battlefactory") {
+						this.say(room, "/wall **Battle Factory**. Randomized teams of Pokémon for a generated Smogon tier with sets that are competitively viable. **__Ruleset__**: Obtainable, Sleep Clause Mod, Team Preview, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
+					}
+
+					let selectRandomTier = poolOfTiers[Math.floor(Math.random()*poolOfTiers.length)];
+					this.say(room, "Randomly selected tier for next tournament is: **" + selectRandomTier + "**");
+					global.randomTier.push(selectRandomTier);
+				}
+
+				if(spl[2] === "update") {
+					if (!spl[3].bracketData || spl[3].bracketData.type !== 'tree') return;
+					if (spl[3].bracketData.rootNode && spl[3].bracketData.rootNode.state === 'inprogress' && spl[3].bracketData.rootNode.room) {
+						this.say(room, '/wall The final battle of the tournament <<' + spl[3].bracketData.rootNode.room + '>>');
 					}
 				}
-				if(spl[2] === "start") {
-					this.say(room, "/wall Good luck to all players");
+
+				if(spl[2] == "battlestart" && isKingsTour) {
+					this.say(room, "/join " + spl[5]);
+					battleRoom = spl[5];
+					this.say(battleRoom, "Kings Tournament battle between **" + spl[3] + "** and **" + spl[4] + "**");
 				}
-				
+
 				if (spl[2] === "end" || spl[2] === "forceend")
 				{
 					hasTourStarted = false;
+					roomTour = false;
+					if(!roomTour && global.randomTier.length > 0) {
+						if(global.tourSwitch === "on") {
+							this.say(room, "Next Tournament is **" + global.randomTier[0] + "** starting in **3 minutes**");
+							setTimeout(() => {
+								if(roomTour === false) {
+									this.say(room, "/tour new " + global.randomTier[0] + ", elimination");
+									this.say(room, "/tour autodq 2");
+									roomTour = true;
+								} else {
+									this.say(room, "A tournament is already in progress. Clearing the next tournament queue. Please start next tournament manually!");
+								}
+								global.randomTier.pop();
+							}, 180000);
+						} else {
+							global.randomTier.pop();
+						}
+					} 
 				}
 				break;
 			case "html": //HTML was received
@@ -460,7 +499,7 @@ exports.parse =
 
 		if (userRank >= VOICE)
 		{
-			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic", "tc", "uptime", "start"].indexOf(cmd) >= 0)
+			if (["tour", "notice", "usage", "icpa", "thinking", "b", "epic", "tc", "uptime", "start", "nt", "atswitch"].indexOf(cmd) >= 0)
 			{
 				canUse = true;
 			}

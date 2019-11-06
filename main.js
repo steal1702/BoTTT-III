@@ -198,6 +198,12 @@ global.Commands = require("./commands.js").commands;
 global.Parse = require("./parser.js").parse;
 global.Connection = null;
 global.hasTourStarted = false;
+global.isKingsTour = false;
+global.roomTour = false;
+global.randomTier = [];
+global.tourSwitch = "on";
+global.player1Name = "";
+global.player2Name = "";
 const MESSAGE_THROTTLE = 850;
 
 let queue = [];
