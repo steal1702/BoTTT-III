@@ -37,7 +37,7 @@ for (let i = 0, len = ranks.length; i < len; i++)
 	rankMap.set(ranks.charAt(i), i);
 }
 
-let poolOfTiers = ["Challenge Cup 1v1", "Metronome Challenge Cup 1v1", "Battle Factory", "Random Battle", "Monotype Random Battle", "Monotype"];
+let poolOfTiers = ["Challenge Cup 1v1", "Metronome Challenge Cup 1v1", "Battle Factory", "Random Battle", "Monotype Random Battle", "Monotype", "Spectral Super Staff Bros", "Super Staff Bros Free for all"];
 // let randomTier = [];
 let nextTourTimer = 5000;
 
