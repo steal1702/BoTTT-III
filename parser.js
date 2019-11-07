@@ -292,7 +292,7 @@ exports.parse =
 					}
 
 					if(spl[3] === "gen7challengecup1v1") {
-						this.say(room, "/addhtmlbox <b>Challenge Cup 1v1<b> - Randomly generated teams with randomly generated sets. Good Luck have fun!");
+						this.say(room, "/addhtmlbox <b>Challenge Cup 1v1</b> - Randomly generated teams with randomly generated sets. Good Luck have fun!");
 					}
 
 					else if(spl[3] === "gen7spectralsuperstaffbros") {
