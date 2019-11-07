@@ -263,7 +263,7 @@ exports.parse =
 				if (toID(by) !== toID(config.nick))
 				{
 					console.log("PM from " + by + " at " + new Date().toLocaleString() + ": " + spl[4]); //Logs PMs to BoTTT III in the console.
-				        this.say(room, "Hello " + by + ". I am a bot. Please PM a room auth for any kind of assistance");
+				        this.say(room, "/pm " + by + ", Hello " + by + ". I am a bot. Please PM a room auth for any kind of assistance");
                                  }
 				this.chatMessage(spl[4], by, ',' + by);
 				break;
