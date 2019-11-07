@@ -260,11 +260,11 @@ exports.parse =
 				{
 					this.ranks[room] = by.charAt(0);
 				}
-				if (toID(by) !== toID(config.nick))
+				if (toID(by) !== toID(config.nick) && !spl[4].startsWith("."))
 				{
 					console.log("PM from " + by + " at " + new Date().toLocaleString() + ": " + spl[4]); //Logs PMs to BoTTT III in the console.
-				        this.say(room, "/pm " + by + ", Hello " + by + ". I am a bot. Please PM a room auth for any kind of assistance");
-                                 }
+			        this.say(room, "/pm " + by + ", Hello " + by + ". I am a bot. Please PM a room auth for any kind of assistance");
+	            }
 				this.chatMessage(spl[4], by, ',' + by);
 				break;
 			case 'N': //Name changes with /nick or using the button
@@ -292,23 +292,36 @@ exports.parse =
 					}
 
 					if(spl[3] === "gen7challengecup1v1") {
-						this.say(room, "/wall **Challenge Cup 1v1**. Randomly generated teams with randomly generated sets. Good Luck have fun!");
+						this.say(room, "/addhtmlbox <b>Challenge Cup 1v1<b> - Randomly generated teams with randomly generated sets. Good Luck have fun!");
 					}
 
 					else if(spl[3] === "gen7spectralsuperstaffbros") {
-						this.say(room, "/wall **Spectral Super Staff Bros**. The Staff on Spectral all fight it out in a battle of Super Staff Bros! Randomized Teams. **__Ruleset__**: Sleep Clause Mod, Cancel Mod, HP Percentage Mod, Team Preview");
+						this.say(room, "/addhtmlbox <b>Spectral Super Staff Bros</b> - The Staff on Spectral all fight it out in a battle of Super Staff Bros! Randomized Teams. <b><i>Ruleset</i></b>: Sleep Clause Mod, Cancel Mod, HP Percentage Mod, Team Preview");
 					}
 
 					else if(spl[3] === "gen7superstaffbrosfreeforall") {
-						this.say(room, "/wall **Super Staff Bros Free for all**. Duke it out with other users custom made pokemon. Randomized Teams. **__Ruleset__**: Obtainable, Sleep Clause Mod, Freeze Clause Mod, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
+						this.say(room, "/addhtmlbox <b>Super Staff Bros Free for all</b> - Duke it out with other users custom made pokemon. Randomized Teams. <b><i>Ruleset</i></b>: Obtainable, Sleep Clause Mod, Freeze Clause Mod, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
 					}
 
 					else if(spl[3] === "gen7metronomechallengecup1v1") {
-						this.say(room, "/wall **Metronome Challenge Cup 1v1**. Randomized Teams with all pokemon knowing only __Metronome__. **__Ruleset__**: Obtainable, HP Percentage Mod, Cancel Mod, Team Preview");
+						this.say(room, "/addhtmlbox <b>Metronome Challenge Cup 1v1</b> - Randomized Teams with all pokemon knowing only <i>Metronome</i>. <b><i>Ruleset</i></b>: Obtainable, HP Percentage Mod, Cancel Mod, Team Preview");
 					}
 
 					else if(spl[3] === "gen7battlefactory") {
-						this.say(room, "/wall **Battle Factory**. Randomized teams of Pokémon for a generated Smogon tier with sets that are competitively viable. **__Ruleset__**: Obtainable, Sleep Clause Mod, Team Preview, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
+						this.say(room, "/addhtmlbox <b>Battle Factory</b> - Randomized teams of Pokémon for a generated Smogon tier with sets that are competitively viable. <b><i>Ruleset</i></b>: Obtainable, Sleep Clause Mod, Team Preview, HP Percentage Mod, Cancel Mod, Mega Rayquaza Clause");
+					} 
+
+					else if(spl[3] === "gen7monotype") {
+						this.say(room, "/addhtmlbox <b>Monotype</b> - All Pokemon in a team must share a type. <b><i>Banlist</i></b>: Aegislash, Arceus, Blaziken, Darkrai, Deoxys-Base, Deoxys-Attack, Dialga, Genesect, Gengar-Mega, Giratina, Groudon, Ho-Oh, Hoopa-Unbound, Kangaskhan-Mega, Kartana, Kyogre, Kyurem-White, Lucario-Mega, Lugia, Lunala, Magearna, Marshadow, Mawile-Mega, Medicham-Mega, Metagross-Mega, Mewtwo, Naganadel, Necrozma-Dawn-Wings, Necrozma-Dusk-Mane, Palkia, Pheromosa, Rayquaza, Reshiram, Salamence-Mega, Shaymin-Sky, Solgaleo, Tapu Lele, Xerneas, Yveltal, Zekrom, Zygarde, Battle Bond, Shadow Tag, Damp Rock, Smooth Rock, Terrain Extender, Baton Pass. <b><i><a href='https://www.smogon.com/forums/threads/monotype-sample-teams.3599682/'>Sample Teams</a></i></b>");
+					}
+
+					else if(spl[3] === "gen7franticfusions") {
+						this.say(room, "/addhtmlbox <b>Frantic Fusions</b> - A metagame where you are able to fuse two Pokemon.");
+						this.say(room, "!om ff");
+					}
+
+					else if(spl[3] === "gen7ou") {
+						this.say(room, "/addhtmlbox <b>Overused</b> - <b><i><a href='https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/'>Sample Teams</a></i></b>");
 					}
 
 					let selectRandomTier = poolOfTiers[Math.floor(Math.random()*poolOfTiers.length)];

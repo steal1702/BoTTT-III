@@ -24,7 +24,7 @@ exports.owners = ["enrii"];
 
 /* Rooms that should be joined in quotes, separated by commas. Showdown
  * policy is not to join lobby, so please don't do that. */
-exports.rooms = ["lobby", "tournaments", "monotype"];
+exports.rooms = ["lobby", "tournaments", "monotype", "trivia"];
 
 /* Any private rooms that should be joined in quotes, separated by commas.
  * The only difference in private rooms are moderation type (you can't warn).
