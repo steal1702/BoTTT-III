@@ -312,7 +312,7 @@ exports.parse =
 					}
 
 					let selectRandomTier = poolOfTiers[Math.floor(Math.random()*poolOfTiers.length)];
-					this.say(room, "Randomly selected tier for next tournament is: **" + selectRandomTier + "**");
+				//	this.say(room, "Randomly selected tier for next tournament is: **" + selectRandomTier + "**");
 					global.randomTier.push(selectRandomTier);
 				}
 
@@ -334,7 +334,7 @@ exports.parse =
 					hasTourStarted = false;
 					roomTour = false;
 					if(!roomTour && global.randomTier.length > 0) {
-						if(global.tourSwitch === "on") {
+						if(global.tourSwitch === "on" && room === "Tournaments") {
 							this.say(room, "Next Tournament is **" + global.randomTier[0] + "** starting in **3 minutes**");
 							setTimeout(() => {
 								if(roomTour === false) {
