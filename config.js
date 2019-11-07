@@ -12,7 +12,7 @@ exports.serverid = "spectral";
 /* The name of the bot and password. I recommend setting up the account prior to
  * launching node main.js for the first time. Use a strong password if you
  * intend for this bot to be a roombot.   */
-exports.nick = "The Fiend Bot";
+exports.nick = "Fiiend";
 exports.pass = "itsabot";
 exports.avatar = "110";
 exports.status = "";
