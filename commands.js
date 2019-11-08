@@ -273,20 +273,20 @@ exports.commands =
 			return;
 		}
 
-		if(room !== "Tournaments") {
+		if(room !== "tournaments") {
 			this.say(room, "The Auto Tournament system is only available in <<tournaments>> room");
 			return;
 		}
 
-		if(global.tourSwitch === "on" && arg === "on" && room === "Tournaments") {
+		if(global.tourSwitch === "on" && arg === "on" && room === "tournaments") {
 			this.say(room, "Auto Tournament switch is already set to ON. Sit back and relax");
-		} else if(global.tourSwitch === "on" && arg === "off" && room === "Tournaments") {
+		} else if(global.tourSwitch === "on" && arg === "off" && room === "tournaments") {
 			this.say(room, "Auto Tournament switch has now been set to OFF. Please make tours manually");
 			global.tourSwitch = "off";
-		} else if(global.tourSwitch === "off" && arg === "on" && room === "Tournaments") {
+		} else if(global.tourSwitch === "off" && arg === "on" && room === "tournaments") {
 			this.say(room, "Auto Tournament switch has now been set to ON. Sit back and relax");
 			global.tourSwitch = "on";
-		} else if(global.tourSwitch === "off" && arg === "off" && room === "Tournaments") {
+		} else if(global.tourSwitch === "off" && arg === "off" && room === "tournaments") {
 			this.say(room, "Auto Tournament switch is already off. Please make tours manually");
 		} else {
 			this.say(room, "Something went wrong");

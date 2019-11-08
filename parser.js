@@ -347,7 +347,7 @@ exports.parse =
 					hasTourStarted = false;
 					roomTour = false;
 					if(!roomTour && global.randomTier.length > 0) {
-						if(global.tourSwitch === "on" && room === "Tournaments") {
+						if(global.tourSwitch === "on" && room === "tournaments") {
 							this.say(room, "Next Tournament is **" + global.randomTier[0] + "** starting in **3 minutes**");
 							setTimeout(() => {
 								if(roomTour === false) {
