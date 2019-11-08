@@ -11,6 +11,7 @@
 
 const http = require("http");
 const { inspect } = require("util");
+let request = require('request');
 
 if (config.serverid === "showdown")
 {
@@ -301,6 +302,35 @@ exports.commands =
 
 	//	this.say(room, "The tournament will automatically start in " + arg + " minute(s)");
 		this.say(room, "/tour autostart " + arg);
+	},
+
+	// fetches pokepaste data
+	team: function(arg, by, room) {
+		if(!arg) {
+			this.say(room, "Please provide a team link. **Command Usage**: ``.team [pokepa.st link]``");
+			return;
+		}
+
+		if(!arg.endsWith("/json")) {
+			arg = arg + "/json";
+		}
+
+		request(arg, (error, response, body) => {
+			if(error) {
+				this.say(room, "**Error**: " + error);
+				return;
+			}
+
+			// parse the data
+			let data = JSON.parse(body);
+
+			// format for /addhtmlbox
+			let newData = data.paste.replace(/\r\n/g,'<br>');
+
+			// show data
+			this.say(room, "/addhtmlbox <details><summary>Paste Titled: " +data.title + "</summary><br><br>" + newData + "</details>");
+			console.log(response.statusCode);
+		});
 	},
 
 	/*Developer Commands
