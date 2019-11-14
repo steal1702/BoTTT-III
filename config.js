@@ -12,7 +12,7 @@ exports.serverid = "azure";
 /* The name of the bot and password. I recommend setting up the account prior to
  * launching node main.js for the first time. Use a strong password if you
  * intend for this bot to be a roombot.   */
-exports.nick = "Fiiend";
+exports.nick = "Sword Fiiend";
 exports.pass = "itsabot";
 exports.avatar = "110";
 exports.status = "";
@@ -30,7 +30,7 @@ exports.rooms = ["masteryuniversity"];
  * The only difference in private rooms are moderation type (you can't warn).
  * Groupchats are included as private rooms. If the room fails to exist, the
  * bot will just ignore it and move on.   */
-exports.privaterooms = ["masteryuniversity"];
+exports.privaterooms = ["masteryuniversity", "sword"];
 
 /* The character to use to execute commands from commands.js. The command
  * character must be made of more than just alphanumeric characters and
@@ -81,7 +81,7 @@ exports.git = "";
  * -Stretching is considered to be using the same character 8 times in a row, or some
  * group of characters 5 times in a row.
  * - Punishments are accelerated if a user continues to activate the bot's warnings/mutes.   */
-exports.allowmute = false;
+exports.allowmute = true;
 
 /* You can customize what punishments are appropriate after repeated offenses here.*/
 exports.punishvals =
